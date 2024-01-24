@@ -1,0 +1,15 @@
+﻿@Abode_HostAddress = https://localhost:7105
+
+POST {{Abode_HostAddress}}/todoitems
+Content-Type: application/json
+
+{
+  "name":"walk dog",
+  "isComplete":true
+}
+
+###
+
+GET {{Abode_HostAddress}}/todoitems
+
+###
