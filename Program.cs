@@ -1,77 +1,63 @@
+using Abode.Tables;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
+using Abode.Tables;
 
-var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<TodoDb>(opt => opt.UseInMemoryDatabase("TodoList"));
-//builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-var app = builder.Build();
-
-RouteGroupBuilder todoItems = app.MapGroup("/todoitems");
-
-todoItems.MapGet("/", GetAllTodos);
-todoItems.MapGet("/complete", GetCompleteTodos);
-todoItems.MapGet("/{id}", GetTodo);
-todoItems.MapPost("/", CreateTodo);
-todoItems.MapPut("/{id}", UpdateTodo);
-todoItems.MapDelete("/{id}", DeleteTodo);
-
-app.Run();
-
-static async Task<IResult> GetAllTodos(TodoDb db)
+namespace Main
 {
-    return TypedResults.Ok(await db.Todos.Select(x => new TodoItemDTO(x)).ToArrayAsync());
-}
-
-static async Task<IResult> GetCompleteTodos(TodoDb db)
-{
-    return TypedResults.Ok(await db.Todos.Where(t => t.IsComplete).Select(x => new TodoItemDTO(x)).ToListAsync());
-}
-
-static async Task<IResult> GetTodo(int id, TodoDb db)
-{
-    return await db.Todos.FindAsync(id)
-        is Todo todo
-            ? TypedResults.Ok(new TodoItemDTO(todo))
-            : TypedResults.NotFound();
-}
-
-static async Task<IResult> CreateTodo(TodoItemDTO todoItemDTO, TodoDb db)
-{
-    var todoItem = new Todo
+    public class Startup
     {
-        IsComplete = todoItemDTO.IsComplete,
-        Name = todoItemDTO.Name
-    };
+        public void ConfigureServices(IServiceCollection services)
+        {
+            var connectionString = "Server=tcp:myfreedbserverhomerun.database.windows.net,1433;Initial Catalog=myFreeDBserverHR!;Persist Security Info=False;User ID=amaracor;Password=capstone14!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30";
+            services.AddDbContext<AbodeDbContext>(opt => opt.UseSqlServer(connectionString));
+            services.AddControllers();
+        }
 
-    db.Todos.Add(todoItem);
-    await db.SaveChangesAsync();
-
-    todoItemDTO = new TodoItemDTO(todoItem);
-
-    return TypedResults.Created($"/todoitems/{todoItem.Id}", todoItemDTO);
-}
-
-static async Task<IResult> UpdateTodo(int id, TodoItemDTO todoItemDTO, TodoDb db)
-{
-    var todo = await db.Todos.FindAsync(id);
-
-    if (todo is null) return TypedResults.NotFound();
-
-    todo.Name = todoItemDTO.Name;
-    todo.IsComplete = todoItemDTO.IsComplete;
-
-    await db.SaveChangesAsync();
-
-    return TypedResults.NoContent();
-}
-
-static async Task<IResult> DeleteTodo(int id, TodoDb db)
-{
-    if (await db.Todos.FindAsync(id) is Todo todo)
-    {
-        db.Todos.Remove(todo);
-        await db.SaveChangesAsync();
-        return TypedResults.NoContent();
+        public void Configure(IApplicationBuilder app)
+        {
+            app.UseExceptionHandler("/error");
+            app.UseStaticFiles();
+            app.UseAuthorization();
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+        }
     }
 
-    return TypedResults.NotFound();
+    public class AbodeDbContext : DbContext
+    {
+        public AbodeDbContext(DbContextOptions<AbodeDbContext> options)
+            : base(options)
+        {
+        }
+
+        public DbSet<Homes> Homes { get; set; }
+        public DbSet<Landlord> Landlord { get; set; }
+    }
+
+
+
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddControllers(); // Add controller services
+            builder.Services.AddDbContext<AbodeDbContext>();
+            var app = builder.Build();
+            app.UseExceptionHandler("/error"); // Optionally handle exceptions
+            app.UseStaticFiles(); // Optionally serve static files
+            app.UseAuthorization(); // Optionally add authorization
+            app.MapControllers(); // Map controllers to endpoints
+            app.Run();
+        }
+    }
 }

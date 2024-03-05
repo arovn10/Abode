@@ -10,6 +10,12 @@ Content-Type: application/json
 
 ###
 
-GET {{Abode_HostAddress}}/todoitems
-
 ###
+
+GET {{Abode_HostAddress}}/test
+Content-Type: application/json
+
+{
+  "name":"walk dog",
+  "isComplete":true
+}
