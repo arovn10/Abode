@@ -38,15 +38,43 @@ namespace Abode.Main
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Homes>()
-                .HasKey(e => e.PersonId); // Define PersonId as the primary key
+                .HasKey(e => e.PersonID); 
             modelBuilder.Entity<Accounts>()
-                .HasKey(e => e.email); // Define PersonId as the primary key
+                .HasKey(e => e.email); 
+            modelBuilder.Entity<RentalListing>()
+                .HasKey(e => e.ListingID);
+            modelBuilder.Entity<Account>()
+                .HasKey(e => e.AccountID);
+            modelBuilder.Entity<AccountType>()
+                .HasKey(e => e.AccountTypeID);
+            modelBuilder.Entity<Profile>()
+                .HasKey(e => e.UserID);
+            modelBuilder.Entity<Person>()
+                .HasKey(e => e.PersonID);
+            modelBuilder.Entity<Tenants>()
+                .HasKey(e => e.PersonID);
+            modelBuilder.Entity<University>()
+                .HasKey(e => e.UniversityID);
+            modelBuilder.Entity<UserRole>()
+                .HasKey(e => e.UserTypeID);
+            modelBuilder.Entity<clients>()
+                .HasKey(e => e.AccountTypeID);
+
         }
 
         public DbSet<Homes> Homes { get; set; }
         public DbSet<Landlord> Landlord { get; set; }
 
         public DbSet<Accounts> Accounts { get; set; }
+        public DbSet<RentalListing> RentalListing { get; set; }
+        public DbSet<Account> Account { get; set; }
+        public DbSet<AccountType> AccountType { get; set; }
+        public DbSet<clients> clients { get; set; }
+        public DbSet<Person> Person { get; set; }
+        public DbSet<Profile> Profile { get; set; }
+        public DbSet<Tenants> Tenants { get; set; }
+        public DbSet<University> University { get; set; }
+        public DbSet<UserRole> UserRole { get; set; }
     }
 }
 

@@ -26,7 +26,7 @@ public class RoutingController : ControllerBase
     [HttpGet("homes/{id}")]
     public ActionResult<object> GetHome(int id)
     {
-        var home = _dbContext.Homes.FirstOrDefault(x => x.PersonId == id);
+        var home = _dbContext.Homes.FirstOrDefault(x => x.PersonID == id);
 
         if (home == null)
         {
@@ -83,10 +83,104 @@ public class RoutingController : ControllerBase
     }
 
     [HttpPost("accounts/create")]
-    public IActionResult AddAcc(Accounts input)
+    public IActionResult CreateAccount(Accounts input)
     {
         AddAccount(input);
         return Ok("Success");
+    }
+    public void AddHome(Homes home)
+    {
+        try
+        {
+            var newHome = new Homes
+            {
+                PersonID = home.PersonID,
+                LastName = home.LastName,
+                FirstName = home.LastName,
+                Address = home.LastName,
+                City = home.LastName
+            };
+
+            _dbContext.Homes.Add(newHome);
+            _dbContext.SaveChanges(); // Assuming SaveChanges is synchronous
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
+    }
+
+    [HttpPost("home/create")]
+    public IActionResult CreateHome(Homes input)
+    {
+        AddHome(input);
+        return Ok("Success");
+    }
+
+    //not working says the wrong type cast for ListingID but im confused bc its def an int
+    /*[HttpGet("rentalListing/{id}")]
+    public ActionResult<object> GetRentalListing(int id)
+    {
+        var listing = _dbContext.RentalListing.FirstOrDefault(x => x.ListingID == id);
+
+        if (listing == null)
+        {
+            return NotFound();
+        }
+
+        var result = new
+        {
+            PropertyName = listing.PropertyName,
+            MonthlyRent = listing.MonthlyRent,
+            Address = listing.Address,
+            AvailableDate = listing.AvailableDate
+        };
+        return Ok(result);
+    }*/
+    public void AddTenant(Tenants tenant)
+    {
+        try
+        {
+            var newTenant = new Tenants
+            {
+                PersonID = tenant.PersonID,
+                LastName = tenant.LastName,
+                FirstName = tenant.LastName,
+                Address = tenant.LastName,
+                City = tenant.LastName
+            };
+
+            _dbContext.Tenants.Add(newTenant);
+            _dbContext.SaveChanges(); // Assuming SaveChanges is synchronous
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
+    }
+
+    [HttpPost("tenant/create")]
+    public IActionResult CreateTenant(Tenants input)
+    {
+        AddTenant(input);
+        return Ok("Success");
+    }
+    [HttpGet("tenant/{id}")]
+    public ActionResult<object> GetTenant(int id)
+    {
+        var tenant = _dbContext.Tenants.FirstOrDefault(x => x.PersonID == id);
+        if (tenant == null)
+        {
+            return NotFound();
+        }
+        var result = new
+        {
+            FirstName = tenant.FirstName,
+            LastName = tenant.LastName,
+            Address = tenant.Address,
+            City = tenant.City
+        };
+        return Ok(result);
     }
 
 }
