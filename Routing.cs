@@ -117,9 +117,8 @@ public class RoutingController : ControllerBase
         return Ok("Success");
     }
 
-    //not working says the wrong type cast for ListingID but im confused bc its def an int
-    /*[HttpGet("rentalListing/{id}")]
-    public ActionResult<object> GetRentalListing(int id)
+    [HttpGet("rentalListing/{id}")]
+    public ActionResult<object> GetRentalListing(decimal id)
     {
         var listing = _dbContext.RentalListing.FirstOrDefault(x => x.ListingID == id);
 
@@ -136,7 +135,35 @@ public class RoutingController : ControllerBase
             AvailableDate = listing.AvailableDate
         };
         return Ok(result);
-    }*/
+    }
+    public void AddRentalListing(RentalListing rental)
+    {
+        try
+        {
+            var newRental = new RentalListing
+            {
+                ListingID = rental.ListingID,
+                PropertyName = rental.PropertyName,
+                MonthlyRent = rental.MonthlyRent,
+                Address = rental.Address,
+                AvailableDate = rental.AvailableDate
+            };
+
+            _dbContext.RentalListing.Add(newRental);
+            _dbContext.SaveChanges(); // Assuming SaveChanges is synchronous
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
+    }
+
+    [HttpPost("rentalListing/create")]
+    public IActionResult CreateRentalListing(RentalListing input)
+    {
+        AddRentalListing(input);
+        return Ok("Rental Listing Successfullly Added");
+    }
     public void AddTenant(Tenants tenant)
     {
         try
@@ -165,6 +192,7 @@ public class RoutingController : ControllerBase
         AddTenant(input);
         return Ok("Success");
     }
+
     [HttpGet("tenant/{id}")]
     public ActionResult<object> GetTenant(int id)
     {
@@ -181,6 +209,19 @@ public class RoutingController : ControllerBase
             City = tenant.City
         };
         return Ok(result);
+    }
+
+    [HttpDelete("deleteTenant/{id}")]
+    public ActionResult<object> DeleteTenant(int id)
+    {
+        var tenant = _dbContext.Tenants.FirstOrDefault(x => x.PersonID == id);
+        if (tenant == null)
+        {
+            return NotFound();
+        }
+        _dbContext.Tenants.Remove(tenant);
+        _dbContext.SaveChanges(); 
+        return Ok("Tenant Successfully Deleted");
     }
 
 }
