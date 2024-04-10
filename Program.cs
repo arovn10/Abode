@@ -39,7 +39,7 @@ namespace Abode.Main
         {
             modelBuilder.Entity<Homes>()
                 .HasKey(e => e.PersonID); 
-            modelBuilder.Entity<Account>()
+            modelBuilder.Entity<Accounts>()
                 .HasKey(e => e.userId); 
             modelBuilder.Entity<RentalListing>()
                 .HasKey(e => e.ListingID);
@@ -63,7 +63,7 @@ namespace Abode.Main
         public DbSet<Homes> Homes { get; set; }
         public DbSet<Landlord> Landlord { get; set; }
 
-        public DbSet<Account> Account { get; set; }
+        public DbSet<Accounts> Accounts { get; set; }
         public DbSet<RentalListing> RentalListing { get; set; }
         public DbSet<AccountType> AccountType { get; set; }
         public DbSet<clients> clients { get; set; }

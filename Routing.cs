@@ -60,21 +60,21 @@ public class RoutingController : ControllerBase
         };
         return Ok(result);
     }
-    public void AddAccount(Account account)
+    public void AddAccount(Accounts Accounts)
     {
         try
         {
-            var newAccount = new Account
+            var newAccount = new Accounts
             {
              
-                email = account.email,
-                username = account.username,
-                password = account.password,
-                userType = account.userType,
-                school = account.school
+                email = Accounts.email,
+                username = Accounts.username,
+                password = Accounts.password,
+                userType = Accounts.userType,
+                school = Accounts.school
             };
 
-            _dbContext.Account.Add(newAccount);
+            _dbContext.Accounts.Add(newAccount);
             _dbContext.SaveChanges(); // Assuming SaveChanges is synchronous
         }
         catch (Exception ex)
@@ -83,8 +83,8 @@ public class RoutingController : ControllerBase
         }
     }
 
-    [HttpPost("Account/create")]
-    public IActionResult CreateAccount(Account input)
+    [HttpPost("Accounts/create")]
+    public IActionResult CreateAccount(Accounts input)
     {
         AddAccount(input);
         return Ok("Success");
@@ -111,24 +111,24 @@ public class RoutingController : ControllerBase
         }
     }
 
-    [HttpGet("account/{id}")]
+    [HttpGet("Accounts/{id}")]
     public ActionResult<object> GetAccount(int id)
     {
-        var account = _dbContext.Account.FirstOrDefault(x => x.userId == id);
+        var Accounts = _dbContext.Accounts.FirstOrDefault(x => x.userId == id);
 
-        if (account == null)
+        if (Accounts == null)
         {
             return NotFound();
         }
 
-        var newAccount = new Account
+        var newAccount = new Accounts
         {
-            userId = account.userId,
-            email = account.email,
-            username = account.username,
-            password = account.password,
-            userType = account.userType,
-            school = account.school
+            userId = Accounts.userId,
+            email = Accounts.email,
+            username = Accounts.username,
+            password = Accounts.password,
+            userType = Accounts.userType,
+            school = Accounts.school
         };
 
         return Ok(newAccount);

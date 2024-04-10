@@ -1,6 +1,6 @@
 ﻿namespace Abode.Tables
 {
-    public class Account
+    public class Accounts
     {
         public int userId {  get; set; }
         public string email { get; set; }
