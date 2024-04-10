@@ -60,12 +60,13 @@ public class RoutingController : ControllerBase
         };
         return Ok(result);
     }
-    public void AddAccount(Accounts account)
+    public void AddAccount(Account account)
     {
         try
         {
-            var newAccount = new Accounts
+            var newAccount = new Account
             {
+             
                 email = account.email,
                 username = account.username,
                 password = account.password,
@@ -73,7 +74,7 @@ public class RoutingController : ControllerBase
                 school = account.school
             };
 
-            _dbContext.Accounts.Add(newAccount);
+            _dbContext.Account.Add(newAccount);
             _dbContext.SaveChanges(); // Assuming SaveChanges is synchronous
         }
         catch (Exception ex)
@@ -82,8 +83,8 @@ public class RoutingController : ControllerBase
         }
     }
 
-    [HttpPost("accounts/create")]
-    public IActionResult CreateAccount(Accounts input)
+    [HttpPost("Account/create")]
+    public IActionResult CreateAccount(Account input)
     {
         AddAccount(input);
         return Ok("Success");
@@ -108,6 +109,29 @@ public class RoutingController : ControllerBase
         {
             throw;
         }
+    }
+
+    [HttpGet("account/{id}")]
+    public ActionResult<object> GetAccount(int id)
+    {
+        var account = _dbContext.Account.FirstOrDefault(x => x.userId == id);
+
+        if (account == null)
+        {
+            return NotFound();
+        }
+
+        var newAccount = new Account
+        {
+            userId = account.userId,
+            email = account.email,
+            username = account.username,
+            password = account.password,
+            userType = account.userType,
+            school = account.school
+        };
+
+        return Ok(newAccount);
     }
 
     [HttpPost("home/create")]
