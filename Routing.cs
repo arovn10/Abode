@@ -83,7 +83,7 @@ public class RoutingController : ControllerBase
         }
     }
 
-    [HttpPost("Accounts/create")]
+    [HttpPost("accounts/create")]
     public IActionResult CreateAccount(Accounts input)
     {
         AddAccount(input);
@@ -111,7 +111,7 @@ public class RoutingController : ControllerBase
         }
     }
 
-    [HttpGet("Accounts/{id}")]
+    [HttpGet("accounts/{id}")]
     public ActionResult<object> GetAccount(int id)
     {
         var Accounts = _dbContext.Accounts.FirstOrDefault(x => x.userId == id);
