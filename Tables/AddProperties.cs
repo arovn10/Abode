@@ -13,6 +13,6 @@
         public int? squareFeet { get; set; }
         public string? amenities { get; set; }
         public string? leaseTerms { get; set; }
-        public int? photo { get; set; }
+        public string? photo { get; set; }
     }
 }
