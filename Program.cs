@@ -51,6 +51,8 @@ namespace Abode.Main
                 .HasKey(e => e.PersonID);
             modelBuilder.Entity<Tenants>()
                 .HasKey(e => e.PersonID);
+            modelBuilder.Entity<AddProperties>()
+                .HasKey(e => e.property_id);
             modelBuilder.Entity<University>()
                 .HasKey(e => e.UniversityID);
             modelBuilder.Entity<UserRole>()
@@ -64,6 +66,7 @@ namespace Abode.Main
         public DbSet<Landlord> Landlord { get; set; }
 
         public DbSet<Accounts> Accounts { get; set; }
+        public DbSet<AddProperties> AddProperties { get; set; }
         public DbSet<RentalListing> RentalListing { get; set; }
         public DbSet<AccountType> AccountType { get; set; }
         public DbSet<clients> clients { get; set; }

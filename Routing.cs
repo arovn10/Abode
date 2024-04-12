@@ -248,4 +248,69 @@ public class RoutingController : ControllerBase
         return Ok("Tenant Successfully Deleted");
     }
 
+    [HttpGet("property/{username}")]
+    public ActionResult<object> GetPropertyData(string username)
+    {
+        var Property = _dbContext.AddProperties.FirstOrDefault(x => x.username == username);
+
+        if (Property == null)
+        {
+            return NotFound();
+        }
+
+        var newProperty = new AddProperties
+        {
+            property_id = Property.property_id,
+            username = Property.username,
+            Address = Property.Address,
+            name = Property.name,
+            description = Property.description,
+            bedrooms = Property.bedrooms,
+            bathrooms = Property.bathrooms,
+            price = Property.price,
+            squareFeet = Property.squareFeet,
+            amenities = Property.amenities,
+            leaseTerms = Property.leaseTerms,
+            photo = Property.photo
+
+        };
+
+        return Ok(newProperty);
+    }
+
+    public void AddProperty(AddProperties Property)
+    {
+        try
+        {
+            var newProperty = new AddProperties
+            {
+                property_id = Property.property_id,
+                username = Property.username,
+                Address = Property.Address,
+                name = Property.name,
+                description = Property.description,
+                bedrooms = Property.bedrooms,
+                bathrooms = Property.bathrooms,
+                price = Property.price,
+                squareFeet = Property.squareFeet,
+                amenities = Property.amenities,
+                leaseTerms = Property.leaseTerms,
+                photo = Property.photo
+            };
+
+            _dbContext.AddProperties.Add(newProperty);
+            _dbContext.SaveChanges(); // Assuming SaveChanges is synchronous
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
+    }
+
+    [HttpPost("property/create")]
+    public IActionResult CreateProperty(AddProperties input)
+    {
+        AddProperty(input);
+        return Ok("Property successfully added");
+    }
 }
