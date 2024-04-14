@@ -313,4 +313,17 @@ public class RoutingController : ControllerBase
         AddProperty(input);
         return Ok("Property successfully added");
     }
+
+    [HttpDelete("deleteProperty/{id}")]
+    public ActionResult<object> DeleteProperty(int id)
+    {
+        var property = _dbContext.AddProperties.FirstOrDefault(x => x.property_id == id);
+        if (property == null)
+        {
+            return NotFound();
+        }
+        _dbContext.AddProperties.Remove(property);
+        _dbContext.SaveChanges();
+        return Ok("Property Successfully Deleted");
+    }
 }
