@@ -404,7 +404,35 @@ public IActionResult UpdateProperty(int id, AddProperties updatedProperty)
    }
 }
 
+ [HttpGet("properties")]
+    public ActionResult<List<object>> GetAllProperties()
+    {
+        // Fetch all properties
+        var properties = _dbContext.AddProperties.ToList();
 
+        // Check if properties list is empty
+        if (!properties.Any())
+        {
+            return NotFound("No properties found.");
+        }
+
+        // Return the list of properties mapped to desired structure
+        return Ok(properties.Select(p => new
+        {
+            property_id = p.property_id,
+            username = p.username,
+            Address = p.Address,
+            name = p.name,
+            description = p.description,
+            bedrooms = p.bedrooms,
+            bathrooms = p.bathrooms,
+            price = p.price,
+            squareFeet = p.squareFeet,
+            amenities = p.amenities,
+            leaseTerms = p.leaseTerms,
+            photo = p.photo
+        }).ToList());
+    }
 
 
 
