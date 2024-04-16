@@ -303,7 +303,8 @@ public ActionResult<object> GetAccountByUsername(string username)
            squareFeet = p.squareFeet,
            amenities = p.amenities,
            leaseTerms = p.leaseTerms,
-           photo = p.photo
+           photo = p.photo,
+           school = p.school
        }).ToList());
    }
    public void AddProperty(AddProperties Property)
@@ -323,7 +324,8 @@ public ActionResult<object> GetAccountByUsername(string username)
            squareFeet = Property.squareFeet,
            amenities = Property.amenities,
            leaseTerms = Property.leaseTerms,
-           photo = Property.photo
+           photo = Property.photo,
+           school = Property.school
        };
 
 
@@ -384,9 +386,11 @@ public IActionResult UpdateProperty(int id, AddProperties updatedProperty)
    property.photo = updatedProperty.photo;
    property.price = updatedProperty.price;
    property.squareFeet = updatedProperty.squareFeet;
+   property.school = updatedProperty.school;
 
 
-   try
+
+        try
    {
        _dbContext.SaveChanges();
        return Ok("Property updated successfully");
@@ -430,7 +434,8 @@ public IActionResult UpdateProperty(int id, AddProperties updatedProperty)
             squareFeet = p.squareFeet,
             amenities = p.amenities,
             leaseTerms = p.leaseTerms,
-            photo = p.photo
+            photo = p.photo,
+            school = p.school
         }).ToList());
     }
 

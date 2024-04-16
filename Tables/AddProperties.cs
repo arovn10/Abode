@@ -14,5 +14,6 @@
         public string? amenities { get; set; }
         public string? leaseTerms { get; set; }
         public string? photo { get; set; }
+        public string? school { get; set; }
     }
 }
