@@ -60,7 +60,7 @@ namespace Abode.Main
             modelBuilder.Entity<clients>()
                 .HasKey(e => e.AccountTypeID);
             modelBuilder.Entity<Messages>()
-                .HasKey(e => e.propertyID);
+                .HasKey(e => e.key);
 
 
         }

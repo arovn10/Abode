@@ -2,6 +2,7 @@
 {
     public class Messages
     {
+        public int key { get; set; }
         public int propertyID { get; set; }
         public string? landlordUsername { get; set; }
         public string? tenantUsername { get; set; }

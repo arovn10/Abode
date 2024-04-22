@@ -481,7 +481,6 @@ public class RoutingController : ControllerBase
             return NotFound();
         }
 
-        // Assuming you want to return all messages for the specific landlord and tenant combination
         var result = landlordsMessages.Select(message => new
         {
             property_id = message.propertyID,
@@ -496,52 +495,41 @@ public class RoutingController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("PostMessage/{landlordUsername}/{username}")]
-    public ActionResult<object> PostMessage(string landlordUsername, string username, [FromBody] Messages messages)
+    [HttpPost("PostStudentInquiry/{username}/{property_id}/{message}")]
+    public ActionResult<object> PostMessage(string username, int property_id, string message)
     {
-        //find if chat between landlord and student or landlord and tenant exists
-        var chat = _dbContext.Messages.FirstOrDefault(x => x.landlordUsername == landlordUsername &&
-                                                        (x.tenantUsername == username || x.studentUsername == username));
+        /*find if chat between landlord and student or landlord and tenant exists
+        var chat = _dbContext.Messages.FirstOrDefault(x => x.propertID == landlordUsername &&
+                                                     (x.tenantUsername == username || x.studentUsername == username));
+        */
 
-        if (chat == null)
-        {
-            // Create a new chat if it doesn't exist
-            chat = new Messages
+
+        //find landlord from propertyid
+        var landlord = _dbContext.AddProperties
+           .Where(p => p.property_id == property_id)
+           .Select(p => p.username).FirstOrDefault();
+
+        if (landlord != null) {
+            var chat = new Messages
             {
-                propertyID = messages.propertyID, 
-                landlordUsername = landlordUsername,
-                tenantUsername = messages.tenantUsername,
-                messages = messages.messages,
+                propertyID = property_id,
+                landlordUsername = landlord,
+                messages = message,
                 dateTime = DateTime.Now,
-                studentUsername = messages.studentUsername,
-                chatOpen = messages.chatOpen
+                studentUsername = username,
+                chatOpen = true
             };
+
             _dbContext.Messages.Add(chat);
+            _dbContext.SaveChanges();
+            return Ok("New chat created and message posted successfully");
         }
+
         else
         {
-            // Update existing chat's last message time
-            chat.dateTime = DateTime.Now;
+            return BadRequest();
         }
-
-        var newMessage = new Messages
-        {
-            propertyID = chat.propertyID, // Use the propertyID from the existing chat
-            landlordUsername = landlordUsername,
-            tenantUsername = messages.tenantUsername,
-            messages = "hi", // Example message, replace with the actual message
-            dateTime = DateTime.Now,
-            studentUsername = messages.studentUsername,
-            chatOpen = messages.chatOpen
-        };
-
-        // Detach the existing chat entity from the DbContext
-        _dbContext.Entry(chat).State = EntityState.Detached;
-
-        _dbContext.Messages.Add(newMessage);
-        _dbContext.SaveChanges();
-
-        return Ok("Message posted successfully");
+    }        
     }
 
 
@@ -550,5 +538,5 @@ public class RoutingController : ControllerBase
 
 
 
-}
+
 
