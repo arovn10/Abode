@@ -489,7 +489,7 @@ public class RoutingController : ControllerBase
             messages = message.messages,
             dateTime = message.dateTime,
             studentUsername = message.studentUsername,
-            chatOpen = message.chatOpen
+            
         }).ToList();
 
         return Ok(result);
@@ -517,7 +517,7 @@ public class RoutingController : ControllerBase
                 messages = message,
                 dateTime = DateTime.Now,
                 studentUsername = username,
-                chatOpen = true
+                
             };
 
             _dbContext.Messages.Add(chat);
