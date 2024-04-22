@@ -709,6 +709,30 @@ public ActionResult<object> GetAccountById(int userId)
         }
     }
 
+    [HttpGet("chat/{id}")]
+    public ActionResult<object> GetChat(int id)
+    {
+        var chat = _dbContext.Messages.FirstOrDefault(x => x.MessageID == id);
+
+
+        if (chat == null)
+        {
+            return NotFound();
+        }
+
+
+        var result = new
+        {
+            landlordUsername = chat.landlordUsername,
+            tenantUsername = chat.tenantUsername,
+            messages = chat.messages,
+            dateTime = chat.dateTime,
+            studentUsername = chat.studentUsername,
+            propertyID = chat.propertyID,
+            MessageID = chat.MessageID,
+        };
+        return Ok(result);
+    }
 }
 
 
