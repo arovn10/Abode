@@ -529,8 +529,102 @@ public class RoutingController : ControllerBase
         {
             return BadRequest();
         }
-    }        
     }
+
+    [HttpPut("username/update/{id}")]
+    public IActionResult UpdateUsername(int id, Accounts updatedUsername)
+    {
+        var username = _dbContext.Accounts.FirstOrDefault(p => p.userId == id);
+        if (username == null)
+        {
+            return NotFound("Username not found");
+        }
+
+
+        username.username = updatedUsername.username;
+        
+
+        try
+        {
+            _dbContext.SaveChanges();
+            return Ok("Username updated successfully");
+        }
+        catch (DbUpdateException ex)
+        {
+            // Log the error
+            Console.WriteLine(ex.InnerException?.Message);
+            return BadRequest("Failed to update username: " + ex.InnerException?.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return BadRequest("An error occurred while updating the username: " + ex.Message);
+        }
+    }
+
+    [HttpPut("password/update/{id}")]
+    public IActionResult UpdatePassword(int id, Accounts updatedPassword)
+    {
+        var password = _dbContext.Accounts.FirstOrDefault(p => p.userId == id);
+        if (password == null)
+        {
+            return NotFound("Username not found");
+        }
+
+
+        password.password = updatedPassword.password;
+
+
+        try
+        {
+            _dbContext.SaveChanges();
+            return Ok("password updated successfully");
+        }
+        catch (DbUpdateException ex)
+        {
+            // Log the error
+            Console.WriteLine(ex.InnerException?.Message);
+            return BadRequest("Failed to update password: " + ex.InnerException?.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return BadRequest("An error occurred while updating the password: " + ex.Message);
+        }
+    }
+
+    [HttpPut("email/update/{id}")]
+    public IActionResult UpdateEmail(int id, Accounts updatedEmail)
+    {
+        var email = _dbContext.Accounts.FirstOrDefault(p => p.userId == id);
+        if (email == null)
+        {
+            return NotFound("Email not found");
+        }
+
+
+        email.email = updatedEmail.email;
+
+
+        try
+        {
+            _dbContext.SaveChanges();
+            return Ok("email updated successfully");
+        }
+        catch (DbUpdateException ex)
+        {
+            // Log the error
+            Console.WriteLine(ex.InnerException?.Message);
+            return BadRequest("Failed to update password: " + ex.InnerException?.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return BadRequest("An error occurred while updating the email: " + ex.Message);
+        }
+    }
+
+}
 
 
 
