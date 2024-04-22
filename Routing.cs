@@ -144,6 +144,29 @@ public class RoutingController : ControllerBase
             school = account.school
         });
     }
+[HttpGet("accounts/by-id/{userId}")]
+
+public ActionResult<object> GetAccountById(int userId)
+{
+    var account = _dbContext.Accounts
+        .FirstOrDefault(acc => acc.userId == userId);
+
+    if (account == null)
+    {
+        return NotFound(new { message = "No account found with that user ID." });
+    }
+
+    return Ok(new {
+        userId = account.userId,
+        email = account.email,
+        username = account.username,
+        password = account.password,
+        userType = account.userType,
+        school = account.school
+    });
+}
+
+    
 
 
 
