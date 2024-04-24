@@ -538,7 +538,41 @@ public ActionResult<object> GetAccountById(int userId)
             var tenantsString = "tenants";
             data.Add(tenantsString, chatstwo);
         }
-    
+
+        if (accountType == "Landlord")
+        {
+            var chats = _dbContext.Messages
+                .Where(x => x.landlordUsername == username && x.studentUsername != null)
+                .Select(message => new
+                {
+                    property_id = message.propertyID,
+                    landlordUsername = message.landlordUsername,
+                    messages = message.messages,
+                    dateTime = message.dateTime,
+                    studentUsername = message.studentUsername,
+                })
+                .ToList();
+
+            var leadsString = "lead chats";
+            data.Add(leadsString, chats);
+
+            var chatstwo = _dbContext.Messages
+                .Where(x => x.landlordUsername == username && x.tenantUsername != null)
+                .Select(message => new
+                {
+                    property_id = message.propertyID,
+                    landlordUsername = message.landlordUsername,
+                    messages = message.messages,
+                    dateTime = message.dateTime,
+                    tenantUsername = message.tenantUsername,
+                })
+                .ToList();
+
+            var tenantsString = "tenant chats";
+            data.Add(tenantsString, chatstwo);
+           
+        }
+
         return Ok(data);
     }
         
