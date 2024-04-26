@@ -517,6 +517,7 @@ public ActionResult<object> GetAccountById(int userId)
                     messages = message.messages,
                     dateTime = message.dateTime,
                     studentUsername = message.studentUsername,
+                    MessageID = message.MessageID
                 })
                 .ToList();
 
@@ -532,6 +533,7 @@ public ActionResult<object> GetAccountById(int userId)
                     messages = message.messages,
                     dateTime = message.dateTime,
                     tenantUsername = message.tenantUsername,
+                    MessageID = message.MessageID
                 })
                 .ToList();
 
@@ -550,6 +552,7 @@ public ActionResult<object> GetAccountById(int userId)
                     messages = message.messages,
                     dateTime = message.dateTime,
                     studentUsername = message.studentUsername,
+                    MessageID = message.MessageID,
                 })
                 .ToList();
 
@@ -565,6 +568,7 @@ public ActionResult<object> GetAccountById(int userId)
                     messages = message.messages,
                     dateTime = message.dateTime,
                     tenantUsername = message.tenantUsername,
+                    MessageID = message.MessageID,
                 })
                 .ToList();
 
@@ -767,7 +771,72 @@ public ActionResult<object> GetAccountById(int userId)
         };
         return Ok(result);
     }
+
+  
+    //not working rn
+    
+    public void AddAmenities(amenities amenities)
+    {
+        try
+        {
+            var a = new amenities
+            {
+                fullyFurnished = amenities.fullyFurnished,
+                pool = amenities.pool,
+                powderRoom = amenities.powderRoom,
+                driveway = amenities.driveway,
+                laundryUnit = amenities.laundryUnit,
+                centralAC = amenities.centralAC,
+                backyard = amenities.backyard,
+                fireplace = amenities.fireplace,
+                petFriendly = amenities.petFriendly,
+                propertyID = amenities.propertyID
+            };
+
+
+            _dbContext.amenities.Add(a);
+            _dbContext.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
+    }
+
+
+    [HttpPost("amenities/create")]
+    public IActionResult CreateAmenities(amenities input)
+    {
+        AddAmenities(input);
+        return Ok("Success");
+    }
+
+    [HttpPut("PostChat/{messageSenderUsername}/{MessageID}/{message}")]
+    public ActionResult<object> PostChat(string messageSenderUsername, int MessageID, string message)
+    {
+        /*find if chat between landlord and student or landlord and tenant exists
+        var chat = _dbContext.Messages.FirstOrDefault(x => x.propertID == landlordUsername &&
+                                                     (x.tenantUsername == username || x.studentUsername == username));
+        */
+
+        //find landlord from propertyid
+        var chat = _dbContext.Messages
+           .Where(p => p.MessageID == MessageID)
+           .FirstOrDefault();
+
+        if (chat == null)
+        {
+            return BadRequest();
+        }
+
+        chat.messages = message;
+
+        _dbContext.SaveChanges();
+        return Ok("New chat posted");
+    }
+
 }
+
 
 
 

@@ -61,6 +61,7 @@ namespace Abode.Main
                 .HasKey(e => e.AccountTypeID);
             modelBuilder.Entity<Messages>()
                 .HasKey(e => e.MessageID);
+            modelBuilder.Entity<amenities>().HasNoKey();
 
 
         }
@@ -82,6 +83,7 @@ namespace Abode.Main
         public DbSet<UserRole> UserRole { get; set; }
 
         public DbSet<Messages> Messages { get; set; }
+        public DbSet<amenities> amenities { get; set; }
     }
 }
 
