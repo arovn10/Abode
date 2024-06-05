@@ -18,6 +18,9 @@ namespace Abode.Main
             builder.Services.AddDbContext<AbodeDbContext>(options => options.UseSqlServer(connectionString));
             
             var app = builder.Build();
+
+            // UseUrls to listen on all network interfaces
+            app.Urls.Add("http://0.0.0.0:5000");
             
             app.UseExceptionHandler("/error");
             app.UseStaticFiles();
@@ -62,15 +65,10 @@ namespace Abode.Main
             modelBuilder.Entity<Messages>()
                 .HasKey(e => e.MessageID);
             modelBuilder.Entity<amenities>().HasNoKey();
-
-
         }
-
-       
 
         public DbSet<Homes> Homes { get; set; }
         public DbSet<Landlord> Landlord { get; set; }
-
         public DbSet<Accounts> Accounts { get; set; }
         public DbSet<AddProperties> AddProperties { get; set; }
         public DbSet<RentalListing> RentalListing { get; set; }
@@ -81,11 +79,7 @@ namespace Abode.Main
         public DbSet<Tenants> Tenants { get; set; }
         public DbSet<University> University { get; set; }
         public DbSet<UserRole> UserRole { get; set; }
-
         public DbSet<Messages> Messages { get; set; }
         public DbSet<amenities> amenities { get; set; }
     }
 }
-
-
-
