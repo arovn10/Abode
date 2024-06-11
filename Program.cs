@@ -21,11 +21,11 @@ namespace Abode.Main
 
             // UseUrls to listen on all network interfaces
             app.Urls.Add("http://0.0.0.0:5000");
-            
+
             app.UseExceptionHandler("/error");
             app.UseStaticFiles();
-            app.UseAuthorization();
             app.UseRouting();
+            app.UseAuthorization();
             app.MapControllers();
             
             app.Run();
