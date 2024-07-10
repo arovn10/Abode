@@ -579,7 +579,19 @@ public ActionResult<object> GetAccountById(int userId)
 
         return Ok(data);
     }
-        
+
+    [HttpDelete("deleteMessages/{propertyID}")]
+    public ActionResult<object> DeleteMessages(int propertyID)
+    {
+        var messages = _dbContext.Messages.Where(x => x.propertyID == propertyID).ToList();
+        if (!messages.Any())
+        {
+            return NotFound();
+        }
+        _dbContext.Messages.RemoveRange(messages);
+        _dbContext.SaveChanges();
+        return Ok("Messages Successfully Deleted");
+    }
 
     [HttpPost("PostStudentInquiry/{username}/{property_id}/{message}")]
     public ActionResult<object> PostMessage(string username, int property_id, string message)
