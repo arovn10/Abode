@@ -517,7 +517,8 @@ public ActionResult<object> GetAccountById(int userId)
                     messages = message.messages,
                     dateTime = message.dateTime,
                     studentUsername = message.studentUsername,
-                    MessageID = message.MessageID
+                    MessageID = message.MessageID,
+                    senderUsername = message.senderUsername
                 })
                 .ToList();
 
@@ -533,7 +534,8 @@ public ActionResult<object> GetAccountById(int userId)
                     messages = message.messages,
                     dateTime = message.dateTime,
                     tenantUsername = message.tenantUsername,
-                    MessageID = message.MessageID
+                    MessageID = message.MessageID,
+                    senderUsername = message.senderUsername
                 })
                 .ToList();
 
@@ -553,6 +555,7 @@ public ActionResult<object> GetAccountById(int userId)
                     dateTime = message.dateTime,
                     studentUsername = message.studentUsername,
                     MessageID = message.MessageID,
+                    senderUsername = message.senderUsername
                 })
                 .ToList();
 
@@ -569,6 +572,7 @@ public ActionResult<object> GetAccountById(int userId)
                     dateTime = message.dateTime,
                     tenantUsername = message.tenantUsername,
                     MessageID = message.MessageID,
+                    senderUsername = message.senderUsername
                 })
                 .ToList();
 
@@ -615,7 +619,8 @@ public ActionResult<object> GetAccountById(int userId)
                 messages = message,
                 dateTime = DateTime.Now,
                 studentUsername = username,
-                
+                senderUsername = username
+
             };
 
             _dbContext.Messages.Add(chat);
@@ -652,6 +657,7 @@ public ActionResult<object> GetAccountById(int userId)
                 messages = message,
                // dateTime = DateTime.Now,
                 tenantUsername = username,
+                senderUsername = username
 
             };
 
@@ -780,6 +786,7 @@ public ActionResult<object> GetAccountById(int userId)
             studentUsername = chat.studentUsername,
             propertyID = chat.propertyID,
             MessageID = chat.MessageID,
+            senderUsername = chat.senderUsername
         };
         return Ok(result);
     }
@@ -842,6 +849,7 @@ public ActionResult<object> GetAccountById(int userId)
         }
 
         chat.messages = message;
+        chat.senderUsername = messageSenderUsername;
 
         _dbContext.SaveChanges();
         return Ok("New chat posted");
