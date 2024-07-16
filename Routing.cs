@@ -506,80 +506,38 @@ public ActionResult<object> GetAccountById(int userId)
 
         var data = new Dictionary<string, object>();
 
-        if (accountType == "Student")
-        {
+        
             var chats = _dbContext.Messages
-                .Where(x => x.studentUsername == username)
+                .Where(x => x.senderUsername == username)
                 .Select(message => new
                 {
                     property_id = message.propertyID,
-                    landlordUsername = message.landlordUsername,
                     messages = message.messages,
                     dateTime = message.dateTime,
-                    studentUsername = message.studentUsername,
                     MessageID = message.MessageID,
-                    senderUsername = message.senderUsername
+                    senderUsername = message.senderUsername,
+                    sendeeUsername = message.sendeeUsername
                 })
                 .ToList();
 
-            var leadsString = "leads";
-            data.Add(leadsString, chats);
+        data.Add("chats as sender", chats);
 
-            var chatstwo = _dbContext.Messages
-                .Where(x => x.tenantUsername == username)
+        var chatstwo = _dbContext.Messages
+                .Where(x => x.sendeeUsername == username)
                 .Select(message => new
                 {
                     property_id = message.propertyID,
-                    landlordUsername = message.landlordUsername,
                     messages = message.messages,
                     dateTime = message.dateTime,
-                    tenantUsername = message.tenantUsername,
                     MessageID = message.MessageID,
-                    senderUsername = message.senderUsername
+                    senderUsername = message.senderUsername,
+                    sendeeUsername = message.sendeeUsername
                 })
                 .ToList();
 
-            var tenantsString = "tenants";
-            data.Add(tenantsString, chatstwo);
-        }
+        data.Add("chats as sendee", chatstwo);
 
-        if (accountType == "Landlord")
-        {
-            var chats = _dbContext.Messages
-                .Where(x => x.landlordUsername == username && x.studentUsername != null)
-                .Select(message => new
-                {
-                    property_id = message.propertyID,
-                    landlordUsername = message.landlordUsername,
-                    messages = message.messages,
-                    dateTime = message.dateTime,
-                    studentUsername = message.studentUsername,
-                    MessageID = message.MessageID,
-                    senderUsername = message.senderUsername
-                })
-                .ToList();
 
-            var leadsString = "lead chats";
-            data.Add(leadsString, chats);
-
-            var chatstwo = _dbContext.Messages
-                .Where(x => x.landlordUsername == username && x.tenantUsername != null)
-                .Select(message => new
-                {
-                    property_id = message.propertyID,
-                    landlordUsername = message.landlordUsername,
-                    messages = message.messages,
-                    dateTime = message.dateTime,
-                    tenantUsername = message.tenantUsername,
-                    MessageID = message.MessageID,
-                    senderUsername = message.senderUsername
-                })
-                .ToList();
-
-            var tenantsString = "tenant chats";
-            data.Add(tenantsString, chatstwo);
-           
-        }
 
         return Ok(data);
     }
@@ -597,79 +555,28 @@ public ActionResult<object> GetAccountById(int userId)
         return Ok("Messages Successfully Deleted");
     }
 
-    [HttpPost("PostStudentInquiry/{username}/{property_id}/{message}")]
-    public ActionResult<object> PostMessage(string username, int property_id, string message)
+    [HttpPost("PostMessage/{sendeeUsername}/{property_id}/{message}/{senderUsername}")]
+    public ActionResult<object> PostMessage(string sendeeUsername, string senderUsername, int property_id, string message)
     {
-        /*find if chat between landlord and student or landlord and tenant exists
-        var chat = _dbContext.Messages.FirstOrDefault(x => x.propertID == landlordUsername &&
-                                                     (x.tenantUsername == username || x.studentUsername == username));
-        */
+        
 
-
-        //find landlord from propertyid
-        var landlord = _dbContext.AddProperties
-           .Where(p => p.property_id == property_id)
-           .Select(p => p.username).FirstOrDefault();
-
-        if (landlord != null) {
+        
             var chat = new Messages
             {
                 propertyID = property_id,
-                landlordUsername = landlord,
                 messages = message,
                 dateTime = DateTime.Now,
-                studentUsername = username,
-                senderUsername = username
+                senderUsername = senderUsername,
+                sendeeUsername = sendeeUsername
 
             };
 
             _dbContext.Messages.Add(chat);
             _dbContext.SaveChanges();
             return Ok("New chat created and message posted successfully");
-        }
+        
 
-        else
-        {
-            return BadRequest();
-        }
-    }
-
-    [HttpPost("PostTenantMessage/{username}/{property_id}/{message}")]
-    public ActionResult<object> PostTenantMessage(string username, int property_id, string message)
-    {
-        /*find if chat between landlord and student or landlord and tenant exists
-        var chat = _dbContext.Messages.FirstOrDefault(x => x.propertID == landlordUsername &&
-                                                     (x.tenantUsername == username || x.studentUsername == username));
-        */
-
-
-        //find landlord from propertyid
-        var landlord = _dbContext.AddProperties
-           .Where(p => p.property_id == property_id)
-           .Select(p => p.username).FirstOrDefault();
-
-        if (landlord != null)
-        {
-            var chat = new Messages
-            {
-                propertyID = property_id,
-                landlordUsername = landlord,
-                messages = message,
-               // dateTime = DateTime.Now,
-                tenantUsername = username,
-                senderUsername = username
-
-            };
-
-            _dbContext.Messages.Add(chat);
-            _dbContext.SaveChanges();
-            return Ok("New chat created and message posted successfully");
-        }
-
-        else
-        {
-            return BadRequest();
-        }
+        
     }
 
     [HttpPut("username/update/{id}")]
@@ -779,14 +686,12 @@ public ActionResult<object> GetAccountById(int userId)
 
         var result = new
         {
-            landlordUsername = chat.landlordUsername,
-            tenantUsername = chat.tenantUsername,
             messages = chat.messages,
             dateTime = chat.dateTime,
-            studentUsername = chat.studentUsername,
             propertyID = chat.propertyID,
             MessageID = chat.MessageID,
-            senderUsername = chat.senderUsername
+            senderUsername = chat.senderUsername,
+            sendeeUsername = chat.sendeeUsername
         };
         return Ok(result);
     }
@@ -830,8 +735,8 @@ public ActionResult<object> GetAccountById(int userId)
         return Ok("Success");
     }
 
-    [HttpPut("PostChat/{messageSenderUsername}/{MessageID}/{message}")]
-    public ActionResult<object> PostChat(string messageSenderUsername, int MessageID, string message)
+    [HttpPut("PostChat/{senderUsername}/{MessageID}/{message}")]
+    public ActionResult<object> PostChat(string senderUsername, int MessageID, string message)
     {
         /*find if chat between landlord and student or landlord and tenant exists
         var chat = _dbContext.Messages.FirstOrDefault(x => x.propertID == landlordUsername &&
@@ -849,7 +754,7 @@ public ActionResult<object> GetAccountById(int userId)
         }
 
         chat.messages = message;
-        chat.senderUsername = messageSenderUsername;
+        chat.senderUsername = senderUsername;
 
         _dbContext.SaveChanges();
         return Ok("New chat posted");
