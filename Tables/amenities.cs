@@ -1,6 +1,6 @@
 ﻿namespace Abode.Tables
 {
-    public class amenities
+    public class Amenities
     {
         public string fullyFurnished { get; set; }
         public string pool { get; set; }
