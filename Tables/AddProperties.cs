@@ -1,4 +1,4 @@
-﻿namespace Abode.Tables
+namespace Abode.Tables
 {
     public class AddProperties
     {
@@ -13,7 +13,7 @@
         public int? squareFeet { get; set; }
         public string? amenities { get; set; }
         public string? leaseTerms { get; set; }
-        public string? photo { get; set; }
+        public List<string>? photo { get; set; } // Changed to List<string>
         public string? school { get; set; }
     }
 }
