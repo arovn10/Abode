@@ -419,47 +419,45 @@ public ActionResult<object> GetAccountById(int userId)
     }
 
 
-    [HttpPut("property/update/{id}")]
-    public IActionResult UpdateProperty(int id, AddProperties updatedProperty)
+   [HttpPut("property/update/{id}")]
+public IActionResult UpdateProperty(int id, AddProperties updatedProperty)
+{
+    var property = _dbContext.AddProperties.FirstOrDefault(p => p.property_id == id);
+    if (property == null)
     {
-        var property = _dbContext.AddProperties.FirstOrDefault(p => p.property_id == id);
-        if (property == null)
-        {
-            return NotFound("Property not found");
-        }
-
-
-        property.Address = updatedProperty.Address;
-        property.amenities = updatedProperty.amenities;
-        property.bathrooms = updatedProperty.bathrooms;
-        property.bedrooms = updatedProperty.bedrooms;
-        property.description = updatedProperty.description;
-        property.leaseTerms = updatedProperty.leaseTerms;
-        property.name = updatedProperty.name;
-        property.photo = updatedProperty.photo;
-        property.price = updatedProperty.price;
-        property.squareFeet = updatedProperty.squareFeet;
-        property.school = updatedProperty.school;
-
-
-
-        try
-        {
-            _dbContext.SaveChanges();
-            return Ok("Property updated successfully");
-        }
-        catch (DbUpdateException ex)
-        {
-            // Log the error
-            Console.WriteLine(ex.InnerException?.Message);
-            return BadRequest("Failed to update property: " + ex.InnerException?.Message);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            return BadRequest("An error occurred while updating the property: " + ex.Message);
-        }
+        return NotFound("Property not found");
     }
+
+    property.Address = updatedProperty.Address;
+    property.amenities = updatedProperty.amenities;
+    property.bathrooms = updatedProperty.bathrooms;
+    property.bedrooms = updatedProperty.bedrooms;
+    property.description = updatedProperty.description;
+    property.leaseTerms = updatedProperty.leaseTerms;
+    property.name = updatedProperty.name;
+    property.photo = string.Join(",", updatedProperty.photo); // Save as comma-separated string
+    property.price = updatedProperty.price;
+    property.squareFeet = updatedProperty.squareFeet;
+    property.school = updatedProperty.school;
+
+    try
+    {
+        _dbContext.SaveChanges();
+        return Ok("Property updated successfully");
+    }
+    catch (DbUpdateException ex)
+    {
+        // Log the error
+        Console.WriteLine(ex.InnerException?.Message);
+        return BadRequest("Failed to update property: " + ex.InnerException?.Message);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+        return BadRequest("An error occurred while updating the property: " + ex.Message);
+    }
+}
+
 
     [HttpGet("properties")]
     public ActionResult<List<object>> GetAllProperties()
