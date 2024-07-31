@@ -331,38 +331,34 @@ public ActionResult<object> GetAccountById(int userId)
         }).ToList());
     }
 
-    [HttpGet("propertyfromID/{id}")]
-    public ActionResult<List<object>> GetPropertiesByPropertyID(int id)
+   [HttpGet("propertyfromID/{id}")]
+public ActionResult<List<object>> GetPropertiesByPropertyID(int id)
+{
+    var properties = _dbContext.AddProperties.Where(p => p.property_id == id).ToList();
+
+    if (!properties.Any())
     {
-        // Fetch all properties that match the given username
-        var properties = _dbContext.AddProperties.Where(p => p.property_id == id).ToList();
-
-
-        // Check if no properties were found
-        if (!properties.Any())
-        {
-            return NotFound("No properties found for this user.");
-        }
-
-
-        // Return the list of properties
-        return Ok(properties.Select(p => new
-        {
-            property_id = p.property_id,
-            username = p.username,
-            Address = p.Address,
-            name = p.name,
-            description = p.description,
-            bedrooms = p.bedrooms,
-            bathrooms = p.bathrooms,
-            price = p.price,
-            squareFeet = p.squareFeet,
-            amenities = p.amenities,
-            leaseTerms = p.leaseTerms,
-            photo = p.photo,
-            school = p.school
-        }).ToList());
+        return NotFound("No properties found for this user.");
     }
+
+    return Ok(properties.Select(p => new
+    {
+        property_id = p.property_id,
+        username = p.username,
+        Address = p.Address,
+        name = p.name,
+        description = p.description,
+        bedrooms = p.bedrooms,
+        bathrooms = p.bathrooms,
+        price = p.price,
+        squareFeet = p.squareFeet,
+        amenities = p.amenities,
+        leaseTerms = p.leaseTerms,
+        photo = p.photo?.Split(",").ToList(), // Convert to list
+        school = p.school
+    }).ToList());
+}
+
     public void AddProperty(AddProperties Property)
     {
         try
