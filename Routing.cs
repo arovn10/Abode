@@ -3,15 +3,15 @@ using Microsoft.EntityFrameworkCore;
 using Abode.Main;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Abode.Tables; // Added for List<string>
+using Abode.Tables;
+using System.Linq;
 
 [ApiController]
 [Route("api/")]
 public class RoutingController : ControllerBase
 {
-    private readonly AbodeDbContext _dbContext; // Added field for AbodeDbContext
+    private readonly AbodeDbContext _dbContext;
 
-    // Constructor to inject AbodeDbContext
     public RoutingController(AbodeDbContext dbContext)
     {
         _dbContext = dbContext;
@@ -27,6 +27,7 @@ public class RoutingController : ControllerBase
     public ActionResult<object> GetHome(int id)
     {
         var home = _dbContext.Homes.FirstOrDefault(x => x.PersonID == id);
+
         if (home == null)
         {
             return NotFound();
@@ -60,23 +61,23 @@ public class RoutingController : ControllerBase
         return Ok(result);
     }
 
-    public void AddAccount(Accounts accounts)
+    public void AddAccount(Accounts Accounts)
     {
         try
         {
             var newAccount = new Accounts
             {
-                email = accounts.email,
-                username = accounts.username,
-                password = accounts.password,
-                userType = accounts.userType,
-                school = accounts.school
+                email = Accounts.email,
+                username = Accounts.username,
+                password = Accounts.password,
+                userType = Accounts.userType,
+                school = Accounts.school
             };
 
             _dbContext.Accounts.Add(newAccount);
             _dbContext.SaveChanges(); // Assuming SaveChanges is synchronous
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             throw;
         }
@@ -105,17 +106,10 @@ public class RoutingController : ControllerBase
             _dbContext.Homes.Add(newHome);
             _dbContext.SaveChanges(); // Assuming SaveChanges is synchronous
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             throw;
         }
-    }
-
-    [HttpPost("home/create")]
-    public IActionResult CreateHome(Homes input)
-    {
-        AddHome(input);
-        return Ok("Success");
     }
 
     [HttpGet("accounts/{username}")]
@@ -162,6 +156,13 @@ public class RoutingController : ControllerBase
         });
     }
 
+    [HttpPost("home/create")]
+    public IActionResult CreateHome(Homes input)
+    {
+        AddHome(input);
+        return Ok("Success");
+    }
+
     [HttpGet("rentalListing/{id}")]
     public ActionResult<object> GetRentalListing(decimal id)
     {
@@ -198,7 +199,7 @@ public class RoutingController : ControllerBase
             _dbContext.RentalListing.Add(newRental);
             _dbContext.SaveChanges(); // Assuming SaveChanges is synchronous
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             throw;
         }
@@ -227,7 +228,7 @@ public class RoutingController : ControllerBase
             _dbContext.Tenants.Add(newTenant);
             _dbContext.SaveChanges(); // Assuming SaveChanges is synchronous
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             throw;
         }
@@ -274,16 +275,13 @@ public class RoutingController : ControllerBase
     [HttpGet("property/{username}")]
     public ActionResult<List<object>> GetPropertiesByUsername(string username)
     {
-        // Fetch all properties that match the given username
         var properties = _dbContext.AddProperties.Where(p => p.username == username).ToList();
 
-        // Check if no properties were found
         if (!properties.Any())
         {
             return NotFound("No properties found for this user.");
         }
 
-        // Return the list of properties
         return Ok(properties.Select(p => new
         {
             property_id = p.property_id,
@@ -297,7 +295,7 @@ public class RoutingController : ControllerBase
             squareFeet = p.squareFeet,
             amenities = p.amenities,
             leaseTerms = p.leaseTerms,
-            photo = p.photo?.Split(',').ToList(), // Convert to list
+            photo = p.photo,
             school = p.school
         }).ToList());
     }
@@ -330,25 +328,25 @@ public class RoutingController : ControllerBase
         }).ToList());
     }
 
-    public void AddProperty(AddProperties property)
+    public void AddProperty(AddProperties Property)
     {
         try
         {
             var newProperty = new AddProperties
             {
-                property_id = property.property_id,
-                username = property.username,
-                Address = property.Address,
-                name = property.name,
-                description = property.description,
-                bedrooms = property.bedrooms,
-                bathrooms = property.bathrooms,
-                price = property.price,
-                squareFeet = property.squareFeet,
-                amenities = property.amenities,
-                leaseTerms = property.leaseTerms,
-                photo = property.photo,
-                school = property.school
+                property_id = Property.property_id,
+                username = Property.username,
+                Address = Property.Address,
+                name = Property.name,
+                description = Property.description,
+                bedrooms = Property.bedrooms,
+                bathrooms = Property.bathrooms,
+                price = Property.price,
+                squareFeet = Property.squareFeet,
+                amenities = Property.amenities,
+                leaseTerms = Property.leaseTerms,
+                photo = Property.photo,
+                school = Property.school
             };
 
             _dbContext.AddProperties.Add(newProperty);
@@ -423,16 +421,13 @@ public class RoutingController : ControllerBase
     [HttpGet("properties")]
     public ActionResult<List<object>> GetAllProperties()
     {
-        // Fetch all properties
         var properties = _dbContext.AddProperties.ToList();
 
-        // Check if properties list is empty
         if (!properties.Any())
         {
             return NotFound("No properties found.");
         }
 
-        // Return the list of properties mapped to desired structure
         return Ok(properties.Select(p => new
         {
             property_id = p.property_id,
@@ -446,7 +441,7 @@ public class RoutingController : ControllerBase
             squareFeet = p.squareFeet,
             amenities = p.amenities,
             leaseTerms = p.leaseTerms,
-            photo = p.photo?.Split(',').ToList(), // Convert to list
+            photo = p.photo,
             school = p.school
         }).ToList());
     }
@@ -563,7 +558,7 @@ public class RoutingController : ControllerBase
         var password = _dbContext.Accounts.FirstOrDefault(p => p.userId == id);
         if (password == null)
         {
-            return NotFound("Password not found");
+            return NotFound("Username not found");
         }
 
         password.password = updatedPassword.password;
@@ -658,7 +653,7 @@ public class RoutingController : ControllerBase
             _dbContext.Amenities.Add(a);
             _dbContext.SaveChanges();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             throw;
         }
@@ -675,7 +670,8 @@ public class RoutingController : ControllerBase
     public ActionResult<object> PostChat(string senderUsername, int MessageID, string message)
     {
         var chat = _dbContext.Messages
-           .FirstOrDefault(p => p.MessageID == MessageID);
+           .Where(p => p.MessageID == MessageID)
+           .FirstOrDefault();
 
         if (chat == null)
         {
