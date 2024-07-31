@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Abode.Main;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Abode.Tables; // Added for List<string>
-
 
 [ApiController]
 [Route("api/")]
@@ -12,13 +11,11 @@ public class RoutingController : ControllerBase
 {
     private readonly AbodeDbContext _dbContext; // Added field for AbodeDbContext
 
-
     // Constructor to inject AbodeDbContext
     public RoutingController(AbodeDbContext dbContext)
     {
         _dbContext = dbContext;
     }
-
 
     [HttpGet("test")]
     public ActionResult<List<string>> Test()
@@ -26,18 +23,14 @@ public class RoutingController : ControllerBase
         return Ok(new List<string> { "hi" });
     }
 
-
     [HttpGet("homes/{id}")]
     public ActionResult<object> GetHome(int id)
     {
         var home = _dbContext.Homes.FirstOrDefault(x => x.PersonID == id);
-
-
         if (home == null)
         {
             return NotFound();
         }
-
 
         var result = new
         {
@@ -48,7 +41,6 @@ public class RoutingController : ControllerBase
         };
         return Ok(result);
     }
-
 
     [HttpGet("landlords/{id}")]
     public ActionResult<object> GetLandlord(int id)
@@ -67,30 +59,28 @@ public class RoutingController : ControllerBase
         };
         return Ok(result);
     }
-    public void AddAccount(Accounts Accounts)
+
+    public void AddAccount(Accounts accounts)
     {
         try
         {
             var newAccount = new Accounts
             {
-
-                email = Accounts.email,
-                username = Accounts.username,
-                password = Accounts.password,
-                userType = Accounts.userType,
-                school = Accounts.school
+                email = accounts.email,
+                username = accounts.username,
+                password = accounts.password,
+                userType = accounts.userType,
+                school = accounts.school
             };
-
 
             _dbContext.Accounts.Add(newAccount);
             _dbContext.SaveChanges(); // Assuming SaveChanges is synchronous
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
     }
-
 
     [HttpPost("accounts/create")]
     public IActionResult CreateAccount(Accounts input)
@@ -98,6 +88,7 @@ public class RoutingController : ControllerBase
         AddAccount(input);
         return Ok("Success");
     }
+
     public void AddHome(Homes home)
     {
         try
@@ -106,72 +97,19 @@ public class RoutingController : ControllerBase
             {
                 PersonID = home.PersonID,
                 LastName = home.LastName,
-                FirstName = home.LastName,
-                Address = home.LastName,
-                City = home.LastName
+                FirstName = home.FirstName,
+                Address = home.Address,
+                City = home.City
             };
-
 
             _dbContext.Homes.Add(newHome);
             _dbContext.SaveChanges(); // Assuming SaveChanges is synchronous
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
     }
-
-
-    [HttpGet("accounts/{username}")]
-    public ActionResult<object> GetAccountByUsername(string username)
-    {
-        var account = _dbContext.Accounts
-            .FirstOrDefault(acc => EF.Functions.Like(acc.username, username));
-
-
-        if (account == null)
-        {
-            return NotFound(new { message = "No account found with that username." });
-        }
-
-
-        return Ok(new {
-            userId = account.userId,
-            email = account.email,
-            username = account.username,
-            password = account.password,
-            userType = account.userType,
-            school = account.school
-        });
-    }
-[HttpGet("accounts/by-id/{userId}")]
-
-public ActionResult<object> GetAccountById(int userId)
-{
-    var account = _dbContext.Accounts
-        .FirstOrDefault(acc => acc.userId == userId);
-
-    if (account == null)
-    {
-        return NotFound(new { message = "No account found with that user ID." });
-    }
-
-    return Ok(new {
-        userId = account.userId,
-        email = account.email,
-        username = account.username,
-        password = account.password,
-        userType = account.userType,
-        school = account.school
-    });
-}
-
-    
-
-
-
-
-
 
     [HttpPost("home/create")]
     public IActionResult CreateHome(Homes input)
@@ -180,18 +118,59 @@ public ActionResult<object> GetAccountById(int userId)
         return Ok("Success");
     }
 
+    [HttpGet("accounts/{username}")]
+    public ActionResult<object> GetAccountByUsername(string username)
+    {
+        var account = _dbContext.Accounts
+            .FirstOrDefault(acc => EF.Functions.Like(acc.username, username));
+
+        if (account == null)
+        {
+            return NotFound(new { message = "No account found with that username." });
+        }
+
+        return Ok(new
+        {
+            userId = account.userId,
+            email = account.email,
+            username = account.username,
+            password = account.password,
+            userType = account.userType,
+            school = account.school
+        });
+    }
+
+    [HttpGet("accounts/by-id/{userId}")]
+    public ActionResult<object> GetAccountById(int userId)
+    {
+        var account = _dbContext.Accounts
+            .FirstOrDefault(acc => acc.userId == userId);
+
+        if (account == null)
+        {
+            return NotFound(new { message = "No account found with that user ID." });
+        }
+
+        return Ok(new
+        {
+            userId = account.userId,
+            email = account.email,
+            username = account.username,
+            password = account.password,
+            userType = account.userType,
+            school = account.school
+        });
+    }
 
     [HttpGet("rentalListing/{id}")]
     public ActionResult<object> GetRentalListing(decimal id)
     {
         var listing = _dbContext.RentalListing.FirstOrDefault(x => x.ListingID == id);
 
-
         if (listing == null)
         {
             return NotFound();
         }
-
 
         var result = new
         {
@@ -202,6 +181,7 @@ public ActionResult<object> GetAccountById(int userId)
         };
         return Ok(result);
     }
+
     public void AddRentalListing(RentalListing rental)
     {
         try
@@ -215,23 +195,22 @@ public ActionResult<object> GetAccountById(int userId)
                 AvailableDate = rental.AvailableDate
             };
 
-
             _dbContext.RentalListing.Add(newRental);
             _dbContext.SaveChanges(); // Assuming SaveChanges is synchronous
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
     }
 
-
     [HttpPost("rentalListing/create")]
     public IActionResult CreateRentalListing(RentalListing input)
     {
         AddRentalListing(input);
-        return Ok("Rental Listing Successfullly Added");
+        return Ok("Rental Listing Successfully Added");
     }
+
     public void AddTenant(Tenants tenant)
     {
         try
@@ -240,21 +219,19 @@ public ActionResult<object> GetAccountById(int userId)
             {
                 PersonID = tenant.PersonID,
                 LastName = tenant.LastName,
-                FirstName = tenant.LastName,
-                Address = tenant.LastName,
-                City = tenant.LastName
+                FirstName = tenant.FirstName,
+                Address = tenant.Address,
+                City = tenant.City
             };
-
 
             _dbContext.Tenants.Add(newTenant);
             _dbContext.SaveChanges(); // Assuming SaveChanges is synchronous
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
     }
-
 
     [HttpPost("tenant/create")]
     public IActionResult CreateTenant(Tenants input)
@@ -262,7 +239,6 @@ public ActionResult<object> GetAccountById(int userId)
         AddTenant(input);
         return Ok("Success");
     }
-
 
     [HttpGet("tenant/{id}")]
     public ActionResult<object> GetTenant(int id)
@@ -282,7 +258,6 @@ public ActionResult<object> GetAccountById(int userId)
         return Ok(result);
     }
 
-
     [HttpDelete("deleteTenant/{id}")]
     public ActionResult<object> DeleteTenant(int id)
     {
@@ -296,21 +271,17 @@ public ActionResult<object> GetAccountById(int userId)
         return Ok("Tenant Successfully Deleted");
     }
 
-
-
     [HttpGet("property/{username}")]
     public ActionResult<List<object>> GetPropertiesByUsername(string username)
     {
         // Fetch all properties that match the given username
         var properties = _dbContext.AddProperties.Where(p => p.username == username).ToList();
 
-
         // Check if no properties were found
         if (!properties.Any())
         {
             return NotFound("No properties found for this user.");
         }
-
 
         // Return the list of properties
         return Ok(properties.Select(p => new
@@ -326,60 +297,59 @@ public ActionResult<object> GetAccountById(int userId)
             squareFeet = p.squareFeet,
             amenities = p.amenities,
             leaseTerms = p.leaseTerms,
-            photo = p.photo,
+            photo = p.photo?.Split(',').ToList(), // Convert to list
             school = p.school
         }).ToList());
     }
 
-   [HttpGet("propertyfromID/{id}")]
-public ActionResult<List<object>> GetPropertiesByPropertyID(int id)
-{
-    var properties = _dbContext.AddProperties.Where(p => p.property_id == id).ToList();
-
-    if (!properties.Any())
+    [HttpGet("propertyfromID/{id}")]
+    public ActionResult<List<object>> GetPropertiesByPropertyID(int id)
     {
-        return NotFound("No properties found for this user.");
+        var properties = _dbContext.AddProperties.Where(p => p.property_id == id).ToList();
+
+        if (!properties.Any())
+        {
+            return NotFound("No properties found for this user.");
+        }
+
+        return Ok(properties.Select(p => new
+        {
+            property_id = p.property_id,
+            username = p.username,
+            Address = p.Address,
+            name = p.name,
+            description = p.description,
+            bedrooms = p.bedrooms,
+            bathrooms = p.bathrooms,
+            price = p.price,
+            squareFeet = p.squareFeet,
+            amenities = p.amenities,
+            leaseTerms = p.leaseTerms,
+            photo = p.photo?.Split(',').ToList(), // Convert to list
+            school = p.school
+        }).ToList());
     }
 
-    return Ok(properties.Select(p => new
-    {
-        property_id = p.property_id,
-        username = p.username,
-        Address = p.Address,
-        name = p.name,
-        description = p.description,
-        bedrooms = p.bedrooms,
-        bathrooms = p.bathrooms,
-        price = p.price,
-        squareFeet = p.squareFeet,
-        amenities = p.amenities,
-        leaseTerms = p.leaseTerms,
-        photo = p.photo?.Split(",").ToList(), // Convert to list
-        school = p.school
-    }).ToList());
-}
-
-    public void AddProperty(AddProperties Property)
+    public void AddProperty(AddProperties property)
     {
         try
         {
             var newProperty = new AddProperties
             {
-                property_id = Property.property_id,
-                username = Property.username,
-                Address = Property.Address,
-                name = Property.name,
-                description = Property.description,
-                bedrooms = Property.bedrooms,
-                bathrooms = Property.bathrooms,
-                price = Property.price,
-                squareFeet = Property.squareFeet,
-                amenities = Property.amenities,
-                leaseTerms = Property.leaseTerms,
-                photo = Property.photo,
-                school = Property.school
+                property_id = property.property_id,
+                username = property.username,
+                Address = property.Address,
+                name = property.name,
+                description = property.description,
+                bedrooms = property.bedrooms,
+                bathrooms = property.bathrooms,
+                price = property.price,
+                squareFeet = property.squareFeet,
+                amenities = property.amenities,
+                leaseTerms = property.leaseTerms,
+                photo = property.photo,
+                school = property.school
             };
-
 
             _dbContext.AddProperties.Add(newProperty);
             _dbContext.SaveChanges(); // Assuming SaveChanges is synchronous
@@ -395,11 +365,8 @@ public ActionResult<List<object>> GetPropertiesByPropertyID(int id)
     public IActionResult CreateProperty(AddProperties input)
     {
         AddProperty(input);
-
-
         return Ok("Property successfully added");
     }
-
 
     [HttpDelete("deleteProperty/{id}")]
     public ActionResult<object> DeleteProperty(int id)
@@ -414,46 +381,44 @@ public ActionResult<List<object>> GetPropertiesByPropertyID(int id)
         return Ok("Property Successfully Deleted");
     }
 
-
-   [HttpPut("property/update/{id}")]
-public IActionResult UpdateProperty(int id, AddProperties updatedProperty)
-{
-    var property = _dbContext.AddProperties.FirstOrDefault(p => p.property_id == id);
-    if (property == null)
+    [HttpPut("property/update/{id}")]
+    public IActionResult UpdateProperty(int id, AddProperties updatedProperty)
     {
-        return NotFound("Property not found");
-    }
+        var property = _dbContext.AddProperties.FirstOrDefault(p => p.property_id == id);
+        if (property == null)
+        {
+            return NotFound("Property not found");
+        }
 
-    property.Address = updatedProperty.Address;
-    property.amenities = updatedProperty.amenities;
-    property.bathrooms = updatedProperty.bathrooms;
-    property.bedrooms = updatedProperty.bedrooms;
-    property.description = updatedProperty.description;
-    property.leaseTerms = updatedProperty.leaseTerms;
-    property.name = updatedProperty.name;
-    property.photo = string.Join(",", updatedProperty.photo); // Save as comma-separated string
-    property.price = updatedProperty.price;
-    property.squareFeet = updatedProperty.squareFeet;
-    property.school = updatedProperty.school;
+        property.Address = updatedProperty.Address;
+        property.amenities = updatedProperty.amenities;
+        property.bathrooms = updatedProperty.bathrooms;
+        property.bedrooms = updatedProperty.bedrooms;
+        property.description = updatedProperty.description;
+        property.leaseTerms = updatedProperty.leaseTerms;
+        property.name = updatedProperty.name;
+        property.photo = string.Join(",", updatedProperty.photo); // Save as comma-separated string
+        property.price = updatedProperty.price;
+        property.squareFeet = updatedProperty.squareFeet;
+        property.school = updatedProperty.school;
 
-    try
-    {
-        _dbContext.SaveChanges();
-        return Ok("Property updated successfully");
+        try
+        {
+            _dbContext.SaveChanges();
+            return Ok("Property updated successfully");
+        }
+        catch (DbUpdateException ex)
+        {
+            // Log the error
+            Console.WriteLine(ex.InnerException?.Message);
+            return BadRequest("Failed to update property: " + ex.InnerException?.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return BadRequest("An error occurred while updating the property: " + ex.Message);
+        }
     }
-    catch (DbUpdateException ex)
-    {
-        // Log the error
-        Console.WriteLine(ex.InnerException?.Message);
-        return BadRequest("Failed to update property: " + ex.InnerException?.Message);
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine(ex.Message);
-        return BadRequest("An error occurred while updating the property: " + ex.Message);
-    }
-}
-
 
     [HttpGet("properties")]
     public ActionResult<List<object>> GetAllProperties()
@@ -481,7 +446,7 @@ public IActionResult UpdateProperty(int id, AddProperties updatedProperty)
             squareFeet = p.squareFeet,
             amenities = p.amenities,
             leaseTerms = p.leaseTerms,
-            photo = p.photo,
+            photo = p.photo?.Split(',').ToList(), // Convert to list
             school = p.school
         }).ToList());
     }
@@ -500,38 +465,35 @@ public IActionResult UpdateProperty(int id, AddProperties updatedProperty)
 
         var data = new Dictionary<string, object>();
 
-        
-            var chats = _dbContext.Messages
-                .Where(x => x.senderUsername == username)
-                .Select(message => new
-                {
-                    property_id = message.propertyID,
-                    messages = message.messages,
-                    dateTime = message.dateTime,
-                    MessageID = message.MessageID,
-                    senderUsername = message.senderUsername,
-                    sendeeUsername = message.sendeeUsername
-                })
-                .ToList();
+        var chats = _dbContext.Messages
+            .Where(x => x.senderUsername == username)
+            .Select(message => new
+            {
+                property_id = message.propertyID,
+                messages = message.messages,
+                dateTime = message.dateTime,
+                MessageID = message.MessageID,
+                senderUsername = message.senderUsername,
+                sendeeUsername = message.sendeeUsername
+            })
+            .ToList();
 
         data.Add("chats as sender", chats);
 
         var chatstwo = _dbContext.Messages
-                .Where(x => x.sendeeUsername == username)
-                .Select(message => new
-                {
-                    property_id = message.propertyID,
-                    messages = message.messages,
-                    dateTime = message.dateTime,
-                    MessageID = message.MessageID,
-                    senderUsername = message.senderUsername,
-                    sendeeUsername = message.sendeeUsername
-                })
-                .ToList();
+            .Where(x => x.sendeeUsername == username)
+            .Select(message => new
+            {
+                property_id = message.propertyID,
+                messages = message.messages,
+                dateTime = message.dateTime,
+                MessageID = message.MessageID,
+                senderUsername = message.senderUsername,
+                sendeeUsername = message.sendeeUsername
+            })
+            .ToList();
 
         data.Add("chats as sendee", chatstwo);
-
-
 
         return Ok(data);
     }
@@ -552,25 +514,18 @@ public IActionResult UpdateProperty(int id, AddProperties updatedProperty)
     [HttpPost("PostMessage/{sendeeUsername}/{property_id}/{message}/{senderUsername}")]
     public ActionResult<object> PostMessage(string sendeeUsername, string senderUsername, int property_id, string message)
     {
-        
+        var chat = new Messages
+        {
+            propertyID = property_id,
+            messages = message,
+            dateTime = DateTime.Now,
+            senderUsername = senderUsername,
+            sendeeUsername = sendeeUsername
+        };
 
-        
-            var chat = new Messages
-            {
-                propertyID = property_id,
-                messages = message,
-                dateTime = DateTime.Now,
-                senderUsername = senderUsername,
-                sendeeUsername = sendeeUsername
-
-            };
-
-            _dbContext.Messages.Add(chat);
-            _dbContext.SaveChanges();
-            return Ok("New chat created and message posted successfully");
-        
-
-        
+        _dbContext.Messages.Add(chat);
+        _dbContext.SaveChanges();
+        return Ok("New chat created and message posted successfully");
     }
 
     [HttpPut("username/update/{id}")]
@@ -582,9 +537,7 @@ public IActionResult UpdateProperty(int id, AddProperties updatedProperty)
             return NotFound("Username not found");
         }
 
-
         username.username = updatedUsername.username;
-        
 
         try
         {
@@ -610,17 +563,15 @@ public IActionResult UpdateProperty(int id, AddProperties updatedProperty)
         var password = _dbContext.Accounts.FirstOrDefault(p => p.userId == id);
         if (password == null)
         {
-            return NotFound("Username not found");
+            return NotFound("Password not found");
         }
 
-
         password.password = updatedPassword.password;
-
 
         try
         {
             _dbContext.SaveChanges();
-            return Ok("password updated successfully");
+            return Ok("Password updated successfully");
         }
         catch (DbUpdateException ex)
         {
@@ -644,20 +595,18 @@ public IActionResult UpdateProperty(int id, AddProperties updatedProperty)
             return NotFound("Email not found");
         }
 
-
         email.email = updatedEmail.email;
-
 
         try
         {
             _dbContext.SaveChanges();
-            return Ok("email updated successfully");
+            return Ok("Email updated successfully");
         }
         catch (DbUpdateException ex)
         {
             // Log the error
             Console.WriteLine(ex.InnerException?.Message);
-            return BadRequest("Failed to update password: " + ex.InnerException?.Message);
+            return BadRequest("Failed to update email: " + ex.InnerException?.Message);
         }
         catch (Exception ex)
         {
@@ -671,12 +620,10 @@ public IActionResult UpdateProperty(int id, AddProperties updatedProperty)
     {
         var chat = _dbContext.Messages.FirstOrDefault(x => x.MessageID == id);
 
-
         if (chat == null)
         {
             return NotFound();
         }
-
 
         var result = new
         {
@@ -690,14 +637,11 @@ public IActionResult UpdateProperty(int id, AddProperties updatedProperty)
         return Ok(result);
     }
 
-  
-    //not working rn
-    
-    public void AddAmenities(amenities amenities)
+    public void AddAmenities(Amenities amenities)
     {
         try
         {
-            var a = new amenities
+            var a = new Amenities
             {
                 fullyFurnished = amenities.fullyFurnished,
                 pool = amenities.pool,
@@ -711,19 +655,17 @@ public IActionResult UpdateProperty(int id, AddProperties updatedProperty)
                 propertyID = amenities.propertyID
             };
 
-
-            _dbContext.amenities.Add(a);
+            _dbContext.Amenities.Add(a);
             _dbContext.SaveChanges();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw;
         }
     }
 
-
     [HttpPost("amenities/create")]
-    public IActionResult CreateAmenities(amenities input)
+    public IActionResult CreateAmenities(Amenities input)
     {
         AddAmenities(input);
         return Ok("Success");
@@ -732,15 +674,8 @@ public IActionResult UpdateProperty(int id, AddProperties updatedProperty)
     [HttpPut("PostChat/{senderUsername}/{MessageID}/{message}")]
     public ActionResult<object> PostChat(string senderUsername, int MessageID, string message)
     {
-        /*find if chat between landlord and student or landlord and tenant exists
-        var chat = _dbContext.Messages.FirstOrDefault(x => x.propertID == landlordUsername &&
-                                                     (x.tenantUsername == username || x.studentUsername == username));
-        */
-
-        //find landlord from propertyid
         var chat = _dbContext.Messages
-           .Where(p => p.MessageID == MessageID)
-           .FirstOrDefault();
+           .FirstOrDefault(p => p.MessageID == MessageID);
 
         if (chat == null)
         {
@@ -753,15 +688,4 @@ public IActionResult UpdateProperty(int id, AddProperties updatedProperty)
         _dbContext.SaveChanges();
         return Ok("New chat posted");
     }
-
 }
-
-
-
-
-
-
-
-
-
-
