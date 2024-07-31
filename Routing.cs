@@ -75,7 +75,7 @@ public class RoutingController : ControllerBase
             };
 
             _dbContext.Accounts.Add(newAccount);
-            _dbContext.SaveChanges(); // Assuming SaveChanges is synchronous
+            _dbContext.SaveChanges();
         }
         catch (Exception ex)
         {
@@ -104,12 +104,19 @@ public class RoutingController : ControllerBase
             };
 
             _dbContext.Homes.Add(newHome);
-            _dbContext.SaveChanges(); // Assuming SaveChanges is synchronous
+            _dbContext.SaveChanges();
         }
         catch (Exception ex)
         {
             throw;
         }
+    }
+
+    [HttpPost("home/create")]
+    public IActionResult CreateHome(Homes input)
+    {
+        AddHome(input);
+        return Ok("Success");
     }
 
     [HttpGet("accounts/{username}")]
@@ -156,13 +163,6 @@ public class RoutingController : ControllerBase
         });
     }
 
-    [HttpPost("home/create")]
-    public IActionResult CreateHome(Homes input)
-    {
-        AddHome(input);
-        return Ok("Success");
-    }
-
     [HttpGet("rentalListing/{id}")]
     public ActionResult<object> GetRentalListing(decimal id)
     {
@@ -197,7 +197,7 @@ public class RoutingController : ControllerBase
             };
 
             _dbContext.RentalListing.Add(newRental);
-            _dbContext.SaveChanges(); // Assuming SaveChanges is synchronous
+            _dbContext.SaveChanges();
         }
         catch (Exception ex)
         {
@@ -226,7 +226,7 @@ public class RoutingController : ControllerBase
             };
 
             _dbContext.Tenants.Add(newTenant);
-            _dbContext.SaveChanges(); // Assuming SaveChanges is synchronous
+            _dbContext.SaveChanges();
         }
         catch (Exception ex)
         {
@@ -295,7 +295,7 @@ public class RoutingController : ControllerBase
             squareFeet = p.squareFeet,
             amenities = p.amenities,
             leaseTerms = p.leaseTerms,
-            photo = p.photo,
+            photo = p.photo.Split(',').ToList(),
             school = p.school
         }).ToList());
     }
@@ -323,7 +323,7 @@ public class RoutingController : ControllerBase
             squareFeet = p.squareFeet,
             amenities = p.amenities,
             leaseTerms = p.leaseTerms,
-            photo = p.photo?.Split(',').ToList(), // Convert to list
+            photo = p.photo.Split(',').ToList(),
             school = p.school
         }).ToList());
     }
@@ -350,11 +350,10 @@ public class RoutingController : ControllerBase
             };
 
             _dbContext.AddProperties.Add(newProperty);
-            _dbContext.SaveChanges(); // Assuming SaveChanges is synchronous
+            _dbContext.SaveChanges();
         }
         catch (Exception ex)
         {
-            // Better error handling: Log this exception or throw a more informative error
             throw new Exception("Failed to add property: " + ex.Message);
         }
     }
@@ -395,7 +394,7 @@ public class RoutingController : ControllerBase
         property.description = updatedProperty.description;
         property.leaseTerms = updatedProperty.leaseTerms;
         property.name = updatedProperty.name;
-        property.photo = string.Join(",", updatedProperty.photo); // Save as comma-separated string
+        property.photo = string.Join(",", updatedProperty.photo);
         property.price = updatedProperty.price;
         property.squareFeet = updatedProperty.squareFeet;
         property.school = updatedProperty.school;
@@ -407,7 +406,6 @@ public class RoutingController : ControllerBase
         }
         catch (DbUpdateException ex)
         {
-            // Log the error
             Console.WriteLine(ex.InnerException?.Message);
             return BadRequest("Failed to update property: " + ex.InnerException?.Message);
         }
@@ -441,7 +439,7 @@ public class RoutingController : ControllerBase
             squareFeet = p.squareFeet,
             amenities = p.amenities,
             leaseTerms = p.leaseTerms,
-            photo = p.photo,
+            photo = p.photo.Split(',').ToList(),
             school = p.school
         }).ToList());
     }
@@ -460,7 +458,7 @@ public class RoutingController : ControllerBase
 
         var data = new Dictionary<string, object>();
 
-        var chats = _dbContext.Messages
+        var chatsAsSender = _dbContext.Messages
             .Where(x => x.senderUsername == username)
             .Select(message => new
             {
@@ -473,9 +471,9 @@ public class RoutingController : ControllerBase
             })
             .ToList();
 
-        data.Add("chats as sender", chats);
+        data.Add("chats as sender", chatsAsSender);
 
-        var chatstwo = _dbContext.Messages
+        var chatsAsSendee = _dbContext.Messages
             .Where(x => x.sendeeUsername == username)
             .Select(message => new
             {
@@ -488,7 +486,7 @@ public class RoutingController : ControllerBase
             })
             .ToList();
 
-        data.Add("chats as sendee", chatstwo);
+        data.Add("chats as sendee", chatsAsSendee);
 
         return Ok(data);
     }
@@ -541,7 +539,6 @@ public class RoutingController : ControllerBase
         }
         catch (DbUpdateException ex)
         {
-            // Log the error
             Console.WriteLine(ex.InnerException?.Message);
             return BadRequest("Failed to update username: " + ex.InnerException?.Message);
         }
@@ -558,7 +555,7 @@ public class RoutingController : ControllerBase
         var password = _dbContext.Accounts.FirstOrDefault(p => p.userId == id);
         if (password == null)
         {
-            return NotFound("Username not found");
+            return NotFound("Password not found");
         }
 
         password.password = updatedPassword.password;
@@ -570,7 +567,6 @@ public class RoutingController : ControllerBase
         }
         catch (DbUpdateException ex)
         {
-            // Log the error
             Console.WriteLine(ex.InnerException?.Message);
             return BadRequest("Failed to update password: " + ex.InnerException?.Message);
         }
@@ -599,7 +595,6 @@ public class RoutingController : ControllerBase
         }
         catch (DbUpdateException ex)
         {
-            // Log the error
             Console.WriteLine(ex.InnerException?.Message);
             return BadRequest("Failed to update email: " + ex.InnerException?.Message);
         }
@@ -670,8 +665,8 @@ public class RoutingController : ControllerBase
     public ActionResult<object> PostChat(string senderUsername, int MessageID, string message)
     {
         var chat = _dbContext.Messages
-           .Where(p => p.MessageID == MessageID)
-           .FirstOrDefault();
+            .Where(p => p.MessageID == MessageID)
+            .FirstOrDefault();
 
         if (chat == null)
         {
