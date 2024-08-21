@@ -15,7 +15,7 @@ namespace Abode.Main
             var connectionString = "Server=tcp:myfreedbserverhomerun.database.windows.net,1433;Initial Catalog=myFreeDBserverHR!;Persist Security Info=False;User ID=amaracor;Password=capstone14!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
             
             builder.Services.AddControllers();
-            builder.Services.AddDbContext<AbodeDbContext>(options => options.UseSqlServer(connectionString));
+            builder.Services.AddDbContext<AbodeDbContextOld>(options => options.UseSqlServer(connectionString));
             
             var app = builder.Build();
 
@@ -32,9 +32,9 @@ namespace Abode.Main
         }
     }
 
-    public class AbodeDbContext : DbContext
+    public class AbodeDbContextOld : DbContext
     {
-        public AbodeDbContext(DbContextOptions<AbodeDbContext> options)
+        public AbodeDbContextOld(DbContextOptions<AbodeDbContextOld> options)
             : base(options)
         {
         }

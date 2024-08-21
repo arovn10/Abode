@@ -10,11 +10,11 @@ using Abode.Tables; // Added for List<string>
 [Route("api/")]
 public class RoutingController : ControllerBase
 {
-    private readonly AbodeDbContext _dbContext; // Added field for AbodeDbContext
+    private readonly AbodeDbContextOld _dbContext; // Added field for AbodeDbContext
 
 
     // Constructor to inject AbodeDbContext
-    public RoutingController(AbodeDbContext dbContext)
+    public RoutingController(AbodeDbContextOld dbContext)
     {
         _dbContext = dbContext;
     }
