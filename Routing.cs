@@ -508,10 +508,10 @@ public ActionResult<object> GetAccountById(int userId)
         }).ToList());
     }
 
-/*    [HttpGet("getMessages/{username}")]
+    [HttpGet("getMessages/{username}")]
     public ActionResult<object> GetMessages(string username)
     {
-        var accountType = _dbContext.Accounts
+     /*   var accountType = _dbContext.Accounts
             .Where(x => x.Username == username)
             .Select(x => x.UserType).FirstOrDefault();
 
@@ -519,35 +519,35 @@ public ActionResult<object> GetAccountById(int userId)
         {
             return NotFound();
         }
-
+*/
         var data = new Dictionary<string, object>();
 
-        
-            var chats = _dbContext.Messages
-                .Where(x => x.LandlordUsername == username)
+
+        var chats = _dbContext.Messages
+            .Where(x => x.Sender == username)
+            .Select(message => new
+            {
+                property_id = message.PropertyId,
+                messages = message.Messages,
+                dateTime = message.DateTime,
+                MessageID = message.MessageId,
+                senderUsername = message.Sender,
+                sendeeUsername = message.Sendee
+            })
+            .ToList();
+
+        data.Add("chats as sender", chats);
+
+        var chatstwo = _dbContext.Messages
+                .Where(x => x.Sendee == username)
                 .Select(message => new
                 {
                     property_id = message.PropertyId,
                     messages = message.Messages,
                     dateTime = message.DateTime,
                     MessageID = message.MessageId,
-                 *//*   senderUsername = message.senderUsername,
-                    sendeeUsername = message.sendeeUsername*//*
-                })
-                .ToList();
-
-        data.Add("chats as sender", chats);
-
-        var chatstwo = _dbContext.Messages
-                .Where(x => x.sendeeUsername == username)
-                .Select(message => new
-                {
-                    property_id = message.propertyID,
-                    messages = message.messages,
-                    dateTime = message.dateTime,
-                    MessageID = message.MessageID,
-                    senderUsername = message.senderUsername,
-                    sendeeUsername = message.sendeeUsername
+                    senderUsername = message.Sender,
+                    sendeeUsername = message.Sendee
                 })
                 .ToList();
 
@@ -557,7 +557,7 @@ public ActionResult<object> GetAccountById(int userId)
 
         return Ok(data);
     }
-*/
+
     [HttpDelete("deleteMessages/{propertyID}")]
     public ActionResult<object> DeleteMessages(int propertyID)
     {
@@ -582,8 +582,8 @@ public ActionResult<object> GetAccountById(int userId)
                 PropertyId = property_id,
                 Messages = message,
                 DateTime = DateTime.Now,
-        /*        senderUsername = senderUsername,
-                sendeeUsername = sendeeUsername*/
+                Sendee = senderUsername,
+                Sender = sendeeUsername
 
             };
 
