@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Abode.Models;
 
-public partial class Tenant
+public partial class TenantsOld
 {
     public int TenantId { get; set; }
 
@@ -22,4 +22,8 @@ public partial class Tenant
     public DateOnly? LeaseEndDate { get; set; }
 
     public string? Status { get; set; }
+
+    public virtual ICollection<LeaseAgreement> LeaseAgreements { get; set; } = new List<LeaseAgreement>();
+
+    public virtual Property? Property { get; set; }
 }

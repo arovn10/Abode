@@ -63,7 +63,7 @@ public partial class Property
 
     public virtual Spec? Spec { get; set; }
 
-    public virtual ICollection<Tenant> Tenants { get; set; } = new List<Tenant>();
+    public virtual ICollection<TenantsOld> TenantsOlds { get; set; } = new List<TenantsOld>();
 
     public virtual Utility? Utility { get; set; }
 }

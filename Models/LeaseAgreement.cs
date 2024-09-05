@@ -25,5 +25,5 @@ public partial class LeaseAgreement
 
     public virtual Property? Property { get; set; }
 
-    public virtual Tenant? Tenant { get; set; }
+    public virtual TenantsOld? Tenant { get; set; }
 }

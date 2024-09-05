@@ -53,6 +53,8 @@ public partial class AbodeDbContext : DbContext
 
     public virtual DbSet<Tenant> Tenants { get; set; }
 
+    public virtual DbSet<TenantsOld> TenantsOlds { get; set; }
+
     public virtual DbSet<University> Universities { get; set; }
 
     public virtual DbSet<UserRole> UserRoles { get; set; }
@@ -295,22 +297,18 @@ public partial class AbodeDbContext : DbContext
             entity.Property(e => e.DateTime)
                 .HasColumnType("datetime")
                 .HasColumnName("dateTime");
-            entity.Property(e => e.LandlordUsername)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("landlordUsername");
             entity.Property(e => e.Messages)
                 .HasColumnType("text")
                 .HasColumnName("messages");
             entity.Property(e => e.PropertyId).HasColumnName("propertyID");
-            entity.Property(e => e.StudentUsername)
+            entity.Property(e => e.Sendee)
                 .HasMaxLength(255)
                 .IsUnicode(false)
-                .HasColumnName("studentUsername");
-            entity.Property(e => e.TenantUsername)
+                .HasColumnName("sendee");
+            entity.Property(e => e.Sender)
                 .HasMaxLength(255)
                 .IsUnicode(false)
-                .HasColumnName("tenantUsername");
+                .HasColumnName("sender");
         });
 
         modelBuilder.Entity<OldProfile>(entity =>
@@ -621,7 +619,41 @@ public partial class AbodeDbContext : DbContext
 
         modelBuilder.Entity<Tenant>(entity =>
         {
+            entity.HasKey(e => e.TenantId).HasName("PK__Tenants___D6F29F3E44BF94A5");
+
+            entity.ToTable("Tenant");
+
+            entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+            entity.Property(e => e.Email)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("email");
+            entity.Property(e => e.LeaseEndDate).HasColumnName("leaseEndDate");
+            entity.Property(e => e.LeaseStartDate).HasColumnName("leaseStartDate");
+            entity.Property(e => e.Name)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("name");
+            entity.Property(e => e.PhoneNumber)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("phoneNumber");
+            entity.Property(e => e.PropertyId).HasColumnName("property_id");
+            entity.Property(e => e.Status)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("status");
+            entity.Property(e => e.Username)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("username");
+        });
+
+        modelBuilder.Entity<TenantsOld>(entity =>
+        {
             entity.HasKey(e => e.TenantId).HasName("PK__Tenants__D6F29F3E7F6564E0");
+
+            entity.ToTable("TenantsOld");
 
             entity.Property(e => e.TenantId)
                 .ValueGeneratedNever()
@@ -650,7 +682,7 @@ public partial class AbodeDbContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("username");
 
-            entity.HasOne(d => d.Property).WithMany(p => p.Tenants)
+            entity.HasOne(d => d.Property).WithMany(p => p.TenantsOlds)
                 .HasForeignKey(d => d.PropertyId)
                 .HasConstraintName("FK__Tenants__propert__18EBB532");
         });

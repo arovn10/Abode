@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using YourNamespace;
 
 namespace Abode.Main
 {
@@ -11,27 +12,16 @@ namespace Abode.Main
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
-            var connectionString = "Server=tcp:myfreedbserverhomerun.database.windows.net,1433;Initial Catalog=myFreeDBserverHR!;Persist Security Info=False;User ID=amaracor;Password=capstone14!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-            
-            builder.Services.AddControllers();
-            builder.Services.AddDbContext<AbodeDbContextOld>(options => options.UseSqlServer(connectionString));
-            
-            var app = builder.Build();
-
-            // UseUrls to listen on all network interfaces
-            app.Urls.Add("http://0.0.0.0:5000");
-            
-            app.UseExceptionHandler("/error");
-            app.UseStaticFiles();
-            app.UseAuthorization();
-            app.UseRouting();
-            app.MapControllers();
-            
-            app.Run();
+            CreateHostBuilder(args).Build().Run();
         }
-    }
 
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
+    }
     public class AbodeDbContextOld : DbContext
     {
         public AbodeDbContextOld(DbContextOptions<AbodeDbContextOld> options)
@@ -44,7 +34,7 @@ namespace Abode.Main
                 .HasKey(e => e.PersonID); 
             modelBuilder.Entity<Accounts>()
                 .HasKey(e => e.userId); 
-            modelBuilder.Entity<RentalListing>()
+            modelBuilder.Entity<RentalListings>()
                 .HasKey(e => e.ListingID);
             modelBuilder.Entity<AccountType>()
                 .HasKey(e => e.AccountTypeID);
@@ -71,7 +61,7 @@ namespace Abode.Main
         public DbSet<Landlord> Landlord { get; set; }
         public DbSet<Accounts> Accounts { get; set; }
         public DbSet<AddProperties> AddProperties { get; set; }
-        public DbSet<RentalListing> RentalListing { get; set; }
+        public DbSet<RentalListings> RentalListing { get; set; }
         public DbSet<AccountType> AccountType { get; set; }
         public DbSet<clients> clients { get; set; }
         public DbSet<Person> Person { get; set; }

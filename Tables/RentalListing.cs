@@ -1,6 +1,6 @@
 ﻿namespace Abode.Tables
 {
-    public class RentalListing
+    public class RentalListings
     {
         public int ListingID { get; set; }
         public string? PropertyName { get; set; }

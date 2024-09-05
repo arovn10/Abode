@@ -9,13 +9,11 @@ public partial class Message
 
     public int? PropertyId { get; set; }
 
-    public string? LandlordUsername { get; set; }
-
-    public string? TenantUsername { get; set; }
+    public string? Sender { get; set; }
 
     public string? Messages { get; set; }
 
     public DateTime? DateTime { get; set; }
 
-    public string? StudentUsername { get; set; }
+    public string? Sendee { get; set; }
 }
