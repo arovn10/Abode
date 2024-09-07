@@ -23,7 +23,7 @@ public partial class LeaseAgreement
 
     public string? Status { get; set; }
 
-    public virtual Property? Property { get; set; }
+    public virtual PropertiesDelete? Property { get; set; }
 
     public virtual TenantsOld? Tenant { get; set; }
 }

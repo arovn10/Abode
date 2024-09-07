@@ -45,7 +45,7 @@ public partial class AbodeDbContext : DbContext
 
     public virtual DbSet<Profile> Profiles { get; set; }
 
-    public virtual DbSet<Property> Properties { get; set; }
+    public virtual DbSet<PropertiesDelete> PropertiesDeletes { get; set; }
 
     public virtual DbSet<RentalListing> RentalListings { get; set; }
 
@@ -406,18 +406,14 @@ public partial class AbodeDbContext : DbContext
 
         modelBuilder.Entity<Photo>(entity =>
         {
-            entity.Property(e => e.PhotoId)
-                .ValueGeneratedNever()
-                .HasColumnName("photo_id");
+            entity.HasKey(e => e.PhotoId).HasName("PK__Photos_N__21B7B5E2D1754B36");
+
             entity.Property(e => e.Description)
                 .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("description");
+                .IsUnicode(false);
             entity.Property(e => e.PhotoLink)
                 .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("photoLink");
-            entity.Property(e => e.PropertyKey).HasColumnName("property_key");
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<Profile>(entity =>
@@ -481,9 +477,11 @@ public partial class AbodeDbContext : DbContext
                 .HasConstraintName("FK__Profile__ameniti__29221CFB");
         });
 
-        modelBuilder.Entity<Property>(entity =>
+        modelBuilder.Entity<PropertiesDelete>(entity =>
         {
             entity.HasKey(e => e.PropertyId).HasName("PK__Properti__735BA4636B0AB0A7");
+
+            entity.ToTable("PropertiesDELETE");
 
             entity.Property(e => e.PropertyId)
                 .ValueGeneratedNever()

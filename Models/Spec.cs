@@ -17,5 +17,5 @@ public partial class Spec
 
     public int? SquareFeet { get; set; }
 
-    public virtual Property Property { get; set; } = null!;
+    public virtual PropertiesDelete Property { get; set; } = null!;
 }

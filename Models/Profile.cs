@@ -35,5 +35,5 @@ public partial class Profile
 
     public string? Amenities { get; set; }
 
-    public virtual Property Property { get; set; } = null!;
+    public virtual PropertiesDelete Property { get; set; } = null!;
 }

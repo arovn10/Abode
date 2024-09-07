@@ -13,5 +13,5 @@ public partial class Financial
 
     public string? Purchase { get; set; }
 
-    public virtual Property Property { get; set; } = null!;
+    public virtual PropertiesDelete Property { get; set; } = null!;
 }

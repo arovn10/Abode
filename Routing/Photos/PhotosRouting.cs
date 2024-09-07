@@ -36,10 +36,34 @@ namespace Abode.PhotosRoute
             }
         }
 
-        [HttpGet("test")]
+        [HttpGet("get/{id}")]
+        public ActionResult<object> GetPhotosByProperty(int id)
+        {
+            var photos = _dbContext.Photos
+                .Where(x => x.PropertyKey == id)
+                .ToList();
+
+            if (!photos.Any())
+            {
+                return NotFound($"No photos found for property ID {id}");
+            }
+
+            // Create the result based on all photos found
+            var result = photos.Select(photo => new
+            {
+                PropertyKey = photo.PropertyKey,
+                PhotoLink = photo.PhotoLink,
+                Description = photo.Description
+            });
+
+            return Ok(result);
+        }
+
+     /*   [HttpGet("test")]
         public IActionResult Test()
         {
             return Ok("Test successful");
-        }
+        }*/
     }
+
 }
