@@ -30,4 +30,6 @@ public partial class AddProperty
     public string? Photo { get; set; }
 
     public string? School { get; set; }
+
+    public virtual Spec? Spec { get; set; }
 }

@@ -61,8 +61,6 @@ public partial class PropertiesDelete
 
     public virtual Profile? Profile { get; set; }
 
-    public virtual Spec? Spec { get; set; }
-
     public virtual ICollection<TenantsOld> TenantsOlds { get; set; } = new List<TenantsOld>();
 
     public virtual Utility? Utility { get; set; }

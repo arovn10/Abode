@@ -24,6 +24,7 @@ namespace Abode.PhotosRoute
                     PropertyKey = input.PropertyKey,
                     PhotoLink = input.PhotoLink,
                     Description = input.Description,
+                    UserId = input.UserId,
                 };
 
                 _dbContext.Photos.Add(newPhoto);

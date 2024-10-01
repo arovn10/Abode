@@ -12,4 +12,6 @@ public partial class Photo
     public string? PhotoLink { get; set; }
 
     public string? Description { get; set; }
+
+    public int? UserId { get; set; }
 }

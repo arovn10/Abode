@@ -35,5 +35,11 @@ public partial class Profile
 
     public string? Amenities { get; set; }
 
+    public string? Bio { get; set; }
+
+    public int? PhoneNumber { get; set; }
+
+    public string? PublicEmail { get; set; }
+
     public virtual PropertiesDelete Property { get; set; } = null!;
 }

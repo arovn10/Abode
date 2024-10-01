@@ -69,11 +69,9 @@ public partial class AbodeDbContext : DbContext
     {
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Accounts__CB9A1CFF54EB91B3");
+            entity.HasKey(e => e.UserId).HasName("PK__Accounts__CB9A1CFF0009EF1E");
 
-            entity.Property(e => e.UserId)
-                .ValueGeneratedNever()
-                .HasColumnName("userId");
+            entity.Property(e => e.UserId).HasColumnName("userId");
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
                 .IsUnicode(false)
@@ -414,6 +412,7 @@ public partial class AbodeDbContext : DbContext
             entity.Property(e => e.PhotoLink)
                 .HasMaxLength(255)
                 .IsUnicode(false);
+            entity.Property(e => e.UserId).HasColumnName("userId");
         });
 
         modelBuilder.Entity<Profile>(entity =>
@@ -438,6 +437,10 @@ public partial class AbodeDbContext : DbContext
                 .HasColumnName("amenities");
             entity.Property(e => e.Bathrooms).HasColumnName("bathrooms");
             entity.Property(e => e.Bedrooms).HasColumnName("bedrooms");
+            entity.Property(e => e.Bio)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("bio");
             entity.Property(e => e.Deposit)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("deposit");
@@ -459,6 +462,7 @@ public partial class AbodeDbContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("parking");
+            entity.Property(e => e.PhoneNumber).HasColumnName("phoneNumber");
             entity.Property(e => e.Photo)
                 .HasMaxLength(255)
                 .IsUnicode(false)
@@ -466,6 +470,10 @@ public partial class AbodeDbContext : DbContext
             entity.Property(e => e.Price)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("price");
+            entity.Property(e => e.PublicEmail)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("publicEmail");
             entity.Property(e => e.Username)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -611,8 +619,7 @@ public partial class AbodeDbContext : DbContext
 
             entity.HasOne(d => d.Property).WithOne(p => p.Spec)
                 .HasForeignKey<Spec>(d => d.PropertyId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Specs__property___208CD6FA");
+                .HasConstraintName("FK_Specs_AddProperties");
         });
 
         modelBuilder.Entity<Tenant>(entity =>

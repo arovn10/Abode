@@ -52,24 +52,8 @@ namespace Abode.PhotosRoute
                 return NotFound($"No specs found for property ID {id}");
             }
 
-          /*  var result = specs.Select(photo => new
-            {
-                PropertyId = specs.PropertyId,
-                Keys = specs.Keys,
-                Paint = specs.Paint,
-                Door = specs.Door,
-                Flooring = specs.Flooring,
-                SquareFeet = ispecsnput.SquareFeet
-            });*/
-
             return Ok(specs);
         }
-
-        /*   [HttpGet("test")]
-           public IActionResult Test()
-           {
-               return Ok("Test successful");
-           }*/
     }
 
 }
