@@ -577,9 +577,6 @@ public ActionResult<object> GetAccountById(int userId)
     [HttpPost("PostMessage/{sendeeUsername}/{property_id}/{message}/{senderUsername}")]
     public ActionResult<object> PostMessage(string sendeeUsername, string senderUsername, int property_id, string message)
     {
-        
-
-        
             var chat = new Message
             {
                 PropertyId = property_id,
@@ -593,8 +590,6 @@ public ActionResult<object> GetAccountById(int userId)
             _dbContext.Messages.Add(chat);
             _dbContext.SaveChanges();
             return Ok("New chat created and message posted successfully");
-        
-
         
     }
 

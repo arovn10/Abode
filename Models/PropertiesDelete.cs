@@ -59,8 +59,6 @@ public partial class PropertiesDelete
 
     public virtual ICollection<LeaseAgreement> LeaseAgreements { get; set; } = new List<LeaseAgreement>();
 
-    public virtual Profile? Profile { get; set; }
-
     public virtual ICollection<TenantsOld> TenantsOlds { get; set; } = new List<TenantsOld>();
 
     public virtual Utility? Utility { get; set; }

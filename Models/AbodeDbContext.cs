@@ -287,11 +287,9 @@ public partial class AbodeDbContext : DbContext
 
         modelBuilder.Entity<Message>(entity =>
         {
-            entity.HasKey(e => e.MessageId).HasName("PK__Messages__C87C037C058AC913");
+            entity.HasKey(e => e.MessageId).HasName("PK__Messages__C87C037C970B0C0F");
 
-            entity.Property(e => e.MessageId)
-                .ValueGeneratedNever()
-                .HasColumnName("MessageID");
+            entity.Property(e => e.MessageId).HasColumnName("MessageID");
             entity.Property(e => e.DateTime)
                 .HasColumnType("datetime")
                 .HasColumnName("dateTime");
@@ -417,13 +415,13 @@ public partial class AbodeDbContext : DbContext
 
         modelBuilder.Entity<Profile>(entity =>
         {
-            entity.HasKey(e => e.PropertyId).HasName("PK__Profile__735BA463B31D3DC3");
+            entity.HasKey(e => e.UserId).HasName("PK__Profile__735BA463B31D3DC3");
 
             entity.ToTable("Profile");
 
-            entity.Property(e => e.PropertyId)
+            entity.Property(e => e.UserId)
                 .ValueGeneratedNever()
-                .HasColumnName("property_id");
+                .HasColumnName("userId");
             entity.Property(e => e.Address)
                 .HasMaxLength(255)
                 .IsUnicode(false)
@@ -478,11 +476,6 @@ public partial class AbodeDbContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("username");
-
-            entity.HasOne(d => d.Property).WithOne(p => p.Profile)
-                .HasForeignKey<Profile>(d => d.PropertyId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Profile__ameniti__29221CFB");
         });
 
         modelBuilder.Entity<PropertiesDelete>(entity =>

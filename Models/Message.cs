@@ -5,8 +5,6 @@ namespace Abode.Models;
 
 public partial class Message
 {
-    public int MessageId { get; set; }
-
     public int? PropertyId { get; set; }
 
     public string? Sender { get; set; }
@@ -16,4 +14,6 @@ public partial class Message
     public DateTime? DateTime { get; set; }
 
     public string? Sendee { get; set; }
+
+    public int MessageId { get; set; }
 }

@@ -5,7 +5,7 @@ namespace Abode.Models;
 
 public partial class Profile
 {
-    public int PropertyId { get; set; }
+    public int UserId { get; set; }
 
     public string? Username { get; set; }
 
@@ -40,6 +40,4 @@ public partial class Profile
     public int? PhoneNumber { get; set; }
 
     public string? PublicEmail { get; set; }
-
-    public virtual PropertiesDelete Property { get; set; } = null!;
 }
