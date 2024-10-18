@@ -19,5 +19,5 @@ public partial class Account
 
     public string? ProfilePic { get; set; }
 
-    public virtual ICollection<ShowingScheduler> Showings { get; set; } = new List<ShowingScheduler>();
+    public virtual ICollection<ShowingAttendee> ShowingAttendees { get; set; } = new List<ShowingAttendee>();
 }

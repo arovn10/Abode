@@ -49,6 +49,8 @@ public partial class AbodeDbContext : DbContext
 
     public virtual DbSet<RentalListing> RentalListings { get; set; }
 
+    public virtual DbSet<ShowingAttendee> ShowingAttendees { get; set; }
+
     public virtual DbSet<ShowingScheduler> ShowingSchedulers { get; set; }
 
     public virtual DbSet<Spec> Specs { get; set; }
@@ -591,15 +593,32 @@ public partial class AbodeDbContext : DbContext
                 .IsUnicode(false);
         });
 
+        modelBuilder.Entity<ShowingAttendee>(entity =>
+        {
+            entity.HasKey(e => e.AttendeeId);
+
+            entity.Property(e => e.AttendeeId).HasColumnName("attendeeId");
+            entity.Property(e => e.Notes).HasColumnName("notes");
+            entity.Property(e => e.ShowingId).HasColumnName("showingId");
+            entity.Property(e => e.UserId).HasColumnName("userId");
+
+            entity.HasOne(d => d.Showing).WithMany(p => p.ShowingAttendees)
+                .HasForeignKey(d => d.ShowingId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__ShowingAt__showi__0B5CAFEA");
+
+            entity.HasOne(d => d.User).WithMany(p => p.ShowingAttendees)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK__ShowingAt__userI__0C50D423");
+        });
+
         modelBuilder.Entity<ShowingScheduler>(entity =>
         {
-            entity.HasKey(e => e.ShowingId).HasName("PK__ShowingS__3213D2C770A5C7DB");
+            entity.HasKey(e => e.ShowingId).HasName("PK__ShowingS__3213D2C795CA10FD");
 
             entity.ToTable("ShowingScheduler");
 
-            entity.Property(e => e.ShowingId)
-                .ValueGeneratedNever()
-                .HasColumnName("showingId");
+            entity.Property(e => e.ShowingId).HasColumnName("showingId");
             entity.Property(e => e.EndTime)
                 .HasColumnType("datetime")
                 .HasColumnName("endTime");
@@ -608,25 +627,6 @@ public partial class AbodeDbContext : DbContext
             entity.Property(e => e.StartTime)
                 .HasColumnType("datetime")
                 .HasColumnName("startTime");
-
-            entity.HasMany(d => d.Users).WithMany(p => p.Showings)
-                .UsingEntity<Dictionary<string, object>>(
-                    "ShowingAttendee",
-                    r => r.HasOne<Account>().WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__ShowingAt__userI__0C50D423"),
-                    l => l.HasOne<ShowingScheduler>().WithMany()
-                        .HasForeignKey("ShowingId")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__ShowingAt__showi__0B5CAFEA"),
-                    j =>
-                    {
-                        j.HasKey("ShowingId", "UserId").HasName("PK__ShowingA__DEAA7308A250B697");
-                        j.ToTable("ShowingAttendees");
-                        j.IndexerProperty<int>("ShowingId").HasColumnName("showingId");
-                        j.IndexerProperty<int>("UserId").HasColumnName("userId");
-                    });
         });
 
         modelBuilder.Entity<Spec>(entity =>

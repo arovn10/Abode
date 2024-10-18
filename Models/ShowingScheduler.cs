@@ -15,5 +15,5 @@ public partial class ShowingScheduler
 
     public bool PublicShowing { get; set; }
 
-    public virtual ICollection<Account> Users { get; set; } = new List<Account>();
+    public virtual ICollection<ShowingAttendee> ShowingAttendees { get; set; } = new List<ShowingAttendee>();
 }
