@@ -24,4 +24,6 @@ public partial class Amenity
     public bool PetFriendly { get; set; }
 
     public int PropertyId { get; set; }
+
+    public int AmenityId { get; set; }
 }

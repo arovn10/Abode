@@ -60,11 +60,35 @@ namespace Abode.PhotosRoute
             return Ok(result);
         }
 
-     /*   [HttpGet("test")]
-        public IActionResult Test()
+        [HttpPut("update/{id}")]
+        public IActionResult UpdatePhoto(int id, [FromBody] Photo input)
         {
-            return Ok("Test successful");
-        }*/
+            try
+            {
+                // Find the existing photo by id
+                var existingPhoto = _dbContext.Photos.FirstOrDefault(p => p.PhotoId == id);
+
+                if (existingPhoto == null)
+                {
+                    return NotFound($"No photo found with ID {id}");
+                }
+
+                // Update the photo fields
+                existingPhoto.PhotoLink = input.PhotoLink;
+                existingPhoto.Description = input.Description;
+                existingPhoto.UserId = input.UserId;
+                existingPhoto.PropertyKey = input.PropertyKey;
+
+                _dbContext.SaveChanges();
+
+                return Ok("Photo updated successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while updating the photo: {ex.Message}. Details: {ex.InnerException?.Message}");
+            }
+        }
+
     }
 
 }

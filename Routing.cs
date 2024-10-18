@@ -751,6 +751,34 @@ public ActionResult<object> GetAccountById(int userId)
         return Ok("Success");
     }
 
+    [HttpGet("amenities/{id}")]
+    public ActionResult<object> GetAmenities(int id)
+    {
+        var home = _dbContext.Amenities.FirstOrDefault(x => x.PropertyId == id);
+
+
+        if (home == null)
+        {
+            return NotFound("no amenities for this property");
+        }
+
+
+        var result = new
+        {
+            pool = home.Pool,
+            fullyFurnished = home.FullyFurnished,
+            powderRoom = home.PowderRoom,
+            driveway = home.Driveway,
+            laundryUnit = home.LaundryUnit,
+            centralAC = home.CentralAc,
+            backyard = home.Backyard,
+            fireplace = home.Fireplace,
+            petFriendly = home.PetFriendly,
+            propertyId = home.PropertyId
+        };
+        return Ok(result);
+    }
+
     [HttpPut("PostChat/{senderUsername}/{MessageID}/{message}")]
     public ActionResult<object> PostChat(string senderUsername, int MessageID, string message)
     {

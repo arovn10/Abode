@@ -152,9 +152,9 @@ public partial class AbodeDbContext : DbContext
 
         modelBuilder.Entity<Amenity>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("amenities");
+            entity.HasKey(e => e.AmenityId).HasName("PK__amenitie__842AF50B8012BDD1");
+
+            entity.ToTable("amenities");
 
             entity.Property(e => e.Backyard).HasColumnName("backyard");
             entity.Property(e => e.CentralAc).HasColumnName("centralAC");
