@@ -8,5 +8,7 @@
         public string? password { get; set; }
         public string? userType { get; set; }
         public string? school { get; set; }
+
+        public string? profilePic { get; set; }
     }
 }

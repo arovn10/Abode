@@ -79,7 +79,8 @@ public class RoutingController : ControllerBase
                 Username = accounts.username,
                 Password = accounts.password,
                 UserType = accounts.userType,
-                School = accounts.school
+                School = accounts.school,
+                ProfilePic = accounts.profilePic
             };
 
             _dbContext.Accounts.Add(newAccount);
@@ -141,7 +142,8 @@ public class RoutingController : ControllerBase
             username = account.Username,
             password = account.Password,
             userType = account.UserType,
-            school = account.School
+            school = account.School,
+            profilePic = account.ProfilePic
         });
     }
 [HttpGet("accounts/by-id/{userId}")]
@@ -162,7 +164,8 @@ public ActionResult<object> GetAccountById(int userId)
         username = account.Username,
         password = account.Password,
         userType = account.UserType,
-        school = account.School
+        school = account.School,
+        profilePic = account.ProfilePic
     });
 }
 
