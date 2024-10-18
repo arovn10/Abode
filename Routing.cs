@@ -778,6 +778,41 @@ public ActionResult<object> GetAccountById(int userId)
         };
         return Ok(result);
     }
+    [HttpPut("amenities/update/{id}")]
+    public IActionResult UpdateAmenities(int id, [FromBody] Amenity input)
+    {
+        try
+        {
+            // Find the existing amenities by property ID
+            var existingAmenity = _dbContext.Amenities.FirstOrDefault(x => x.PropertyId == id);
+
+            if (existingAmenity == null)
+            {
+                return NotFound($"No amenities found for property ID {id}");
+            }
+
+            // Update the amenity fields
+            existingAmenity.Pool = input.Pool;
+            existingAmenity.FullyFurnished = input.FullyFurnished;
+            existingAmenity.PowderRoom = input.PowderRoom;
+            existingAmenity.Driveway = input.Driveway;
+            existingAmenity.LaundryUnit = input.LaundryUnit;
+            existingAmenity.CentralAc = input.CentralAc;
+            existingAmenity.Backyard = input.Backyard;
+            existingAmenity.Fireplace = input.Fireplace;
+            existingAmenity.PetFriendly = input.PetFriendly;
+
+            _dbContext.SaveChanges();
+
+            return Ok("Amenities updated successfully");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred while updating the amenities: {ex.Message}. Details: {ex.InnerException?.Message}");
+        }
+    }
+
+
 
     [HttpPut("PostChat/{senderUsername}/{MessageID}/{message}")]
     public ActionResult<object> PostChat(string senderUsername, int MessageID, string message)
