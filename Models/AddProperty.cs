@@ -31,5 +31,7 @@ public partial class AddProperty
 
     public string? School { get; set; }
 
+    public virtual ICollection<MaintenanceRequest> MaintenanceRequests { get; set; } = new List<MaintenanceRequest>();
+
     public virtual Spec? Spec { get; set; }
 }

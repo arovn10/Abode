@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Abode.Tables;
 using Microsoft.EntityFrameworkCore;
 
 namespace Abode.Models;
@@ -33,8 +34,6 @@ public partial class AbodeDbContext : DbContext
 
     public virtual DbSet<LeaseAgreement> LeaseAgreements { get; set; }
 
-    public virtual DbSet<MaintenanceRequest> MaintenanceRequests { get; set; }
-
     public virtual DbSet<Message> Messages { get; set; }
 
     public virtual DbSet<OldProfile> OldProfiles { get; set; }
@@ -67,6 +66,7 @@ public partial class AbodeDbContext : DbContext
 
     public virtual DbSet<Utility> Utilities { get; set; }
 
+    public virtual DbSet<MaintenanceRequest> MaintenanceRequests { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Data Source=tcp:abodeserver.database.windows.net,1433;Initial Catalog=Abode;User ID=amaracor;Password=capstone14!;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
@@ -293,35 +293,6 @@ public partial class AbodeDbContext : DbContext
             entity.HasOne(d => d.Tenant).WithMany(p => p.LeaseAgreements)
                 .HasForeignKey(d => d.TenantId)
                 .HasConstraintName("FK__LeaseAgre__tenan__1CBC4616");
-        });
-
-        modelBuilder.Entity<MaintenanceRequest>(entity =>
-        {
-            entity.HasKey(e => e.RequestId).HasName("PK__Maintena__18D3B90F029A56C1");
-
-            entity.Property(e => e.RequestId).HasColumnName("request_id");
-            entity.Property(e => e.PropertyId).HasColumnName("property_id");
-            entity.Property(e => e.RequestDescription)
-                .HasColumnType("text")
-                .HasColumnName("request_description");
-            entity.Property(e => e.RequestStatus)
-                .HasMaxLength(50)
-                .IsUnicode(false)
-                .HasDefaultValue("In-Progress")
-                .HasColumnName("request_status");
-            entity.Property(e => e.SubmissionDate)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("submission_date");
-            entity.Property(e => e.TenantId).HasColumnName("tenant_id");
-
-            entity.HasOne(d => d.Property).WithMany(p => p.MaintenanceRequests)
-                .HasForeignKey(d => d.PropertyId)
-                .HasConstraintName("FK__Maintenan__prope__1B9317B3");
-
-            entity.HasOne(d => d.Tenant).WithMany(p => p.MaintenanceRequests)
-                .HasForeignKey(d => d.TenantId)
-                .HasConstraintName("FK__Maintenan__tenan__1C873BEC");
         });
 
         modelBuilder.Entity<Message>(entity =>
@@ -817,6 +788,29 @@ public partial class AbodeDbContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Utilities__prope__2645B050");
         });
+
+        modelBuilder.Entity<MaintenanceRequest>(entity =>
+            {
+                entity.HasKey(e => e.RequestId);
+
+                entity.Property(e => e.RequestId).HasColumnName("request_id");
+                entity.Property(e => e.RequestDescription).HasColumnName("request_description");
+                entity.Property(e => e.RequestStatus).HasColumnName("request_status").HasDefaultValue("In-progress");
+                entity.Property(e => e.SubmissionDate).HasColumnName("submission_date").HasDefaultValueSql("GETDATE()");
+                entity.Property(e => e.PropertyId).HasColumnName("property_id");
+                entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+
+                // Define the relationships (foreign keys) if any
+                entity.HasOne(d => d.Property)
+                    .WithMany(p => p.MaintenanceRequests)
+                    .HasForeignKey(d => d.PropertyId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+
+                entity.HasOne(d => d.Tenant)
+                    .WithMany(t => t.MaintenanceRequests)
+                    .HasForeignKey(d => d.TenantId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+            });
 
         OnModelCreatingPartial(modelBuilder);
     }

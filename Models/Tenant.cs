@@ -22,4 +22,6 @@ public partial class Tenant
     public DateOnly? LeaseEndDate { get; set; }
 
     public string? Status { get; set; }
+
+    public virtual ICollection<MaintenanceRequest> MaintenanceRequests { get; set; } = new List<MaintenanceRequest>();
 }

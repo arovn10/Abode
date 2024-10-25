@@ -90,9 +90,8 @@ namespace Abode.AccountsRouting
             try
             {
                 var emails = _dbContext.Accounts
-                    .Select(a => a.Email)   
-                    .ToList();
-
+                .Select(a => a.Email)   
+                .ToList();
                 return Ok(emails);
             }
             catch (Exception ex)
@@ -101,6 +100,45 @@ namespace Abode.AccountsRouting
             }
         }
 
+        [HttpPut("profile/{userId}")]
+        public IActionResult UpdateProfile(int userId, [FromBody] Profile profileInput){
+            try
+            {
+                var existingProfile = _dbContext.Profiles.FirstOrDefault(p => p.UserId == userId);
+                if (existingProfile == null)
+                {
+                    return NotFound(new { message = $"Profile for user with ID {userId} not found." });
+                }
+                existingProfile.AirConditioning = profileInput.AirConditioning;
+                existingProfile.Deposit = profileInput.Deposit;
+                existingProfile.PhoneNumber = profileInput.PhoneNumber;
+                existingProfile.Address = profileInput.Address;
+                existingProfile.Amenities = profileInput.Amenities;
+                existingProfile.Bathrooms = profileInput.Bathrooms;
+                existingProfile.Bedrooms = profileInput.Bedrooms;
+                existingProfile.Bio = profileInput.Bio;
+                existingProfile.Description = profileInput.Description;
+                existingProfile.Laundry = profileInput.Laundry;
+                existingProfile.LeaseTerms = profileInput.LeaseTerms;
+                existingProfile.Name = profileInput.Name;
+                existingProfile.Parking = profileInput.Parking;
+                existingProfile.PhoneNumber = profileInput.PhoneNumber;
+                existingProfile.Photo = profileInput.Photo;
+                existingProfile.Price = profileInput.Price;
+                existingProfile.LeaseTerms = profileInput.LeaseTerms;
+                existingProfile.PublicEmail = profileInput.PublicEmail;
+                existingProfile.Username = profileInput.Username;                
+                _dbContext.SaveChanges();
+                return Ok(new { message = "Profile updated successfully.", profile = existingProfile });
+            }
+            catch (DbUpdateException dbEx){
+                return BadRequest(new { message = "Error occurred while updating profile in the database.", details = dbEx.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
     }
-
 }
+

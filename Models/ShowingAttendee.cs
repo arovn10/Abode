@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace Abode.Models;
 
@@ -14,8 +13,7 @@ public partial class ShowingAttendee
 
     public int AttendeeId { get; set; }
 
-    [JsonIgnore]
-    public virtual ShowingScheduler? Showing { get; set; } = null!;
+    public virtual ShowingScheduler Showing { get; set; } = null!;
 
     public virtual Account? User { get; set; }
 }
