@@ -10,6 +10,7 @@ namespace Abode.Tables
         public DateTime? dateTime { get; set; }
         public string? senderUsername { get; set; }
         public string? sendeeUsername { get; set; }
+        
 
 
 

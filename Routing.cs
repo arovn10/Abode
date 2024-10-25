@@ -842,6 +842,42 @@ public ActionResult<object> GetAccountById(int userId)
         return Ok("New chat posted");
     }
 
+    [HttpGet("tenants/byPropertyId/{propertyId}")]
+    public async Task<IActionResult> GetTenantsByPropertyId(int propertyId){
+    try
+    {
+        var tenants = await _dbContext.Tenants
+            .Where(t => t.PropertyId == propertyId)
+            .ToListAsync();
+
+        if (!tenants.Any())
+        {
+            return NotFound(new { message = $"No tenants found for property ID {propertyId}" });
+        }
+
+        var result = tenants.Select(t => new
+        {
+            TenantId = t.TenantId,
+            Username = t.Username,
+            Name = t.Name,
+            Email = t.Email,
+            PhoneNumber = t.PhoneNumber,
+            LeaseStartDate = t.LeaseStartDate,
+            LeaseEndDate = t.LeaseEndDate,
+            Status = t.Status
+        });
+
+        return Ok(result);
+    }
+    catch (Exception ex)
+    {
+        return StatusCode(500, $"An error occurred: {ex.Message}");
+    }
+}
+
+
+    
+
 }
 
 

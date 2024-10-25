@@ -33,6 +33,8 @@ public partial class AbodeDbContext : DbContext
 
     public virtual DbSet<LeaseAgreement> LeaseAgreements { get; set; }
 
+    public virtual DbSet<MaintenanceRequest> MaintenanceRequests { get; set; }
+
     public virtual DbSet<Message> Messages { get; set; }
 
     public virtual DbSet<OldProfile> OldProfiles { get; set; }
@@ -291,6 +293,35 @@ public partial class AbodeDbContext : DbContext
             entity.HasOne(d => d.Tenant).WithMany(p => p.LeaseAgreements)
                 .HasForeignKey(d => d.TenantId)
                 .HasConstraintName("FK__LeaseAgre__tenan__1CBC4616");
+        });
+
+        modelBuilder.Entity<MaintenanceRequest>(entity =>
+        {
+            entity.HasKey(e => e.RequestId).HasName("PK__Maintena__18D3B90F029A56C1");
+
+            entity.Property(e => e.RequestId).HasColumnName("request_id");
+            entity.Property(e => e.PropertyId).HasColumnName("property_id");
+            entity.Property(e => e.RequestDescription)
+                .HasColumnType("text")
+                .HasColumnName("request_description");
+            entity.Property(e => e.RequestStatus)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasDefaultValue("In-Progress")
+                .HasColumnName("request_status");
+            entity.Property(e => e.SubmissionDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("submission_date");
+            entity.Property(e => e.TenantId).HasColumnName("tenant_id");
+
+            entity.HasOne(d => d.Property).WithMany(p => p.MaintenanceRequests)
+                .HasForeignKey(d => d.PropertyId)
+                .HasConstraintName("FK__Maintenan__prope__1B9317B3");
+
+            entity.HasOne(d => d.Tenant).WithMany(p => p.MaintenanceRequests)
+                .HasForeignKey(d => d.TenantId)
+                .HasConstraintName("FK__Maintenan__tenan__1C873BEC");
         });
 
         modelBuilder.Entity<Message>(entity =>
