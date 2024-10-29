@@ -26,4 +26,6 @@ public partial class LeaseAgreement
     public virtual PropertiesDelete? Property { get; set; }
 
     public virtual TenantsOld? Tenant { get; set; }
+
+    public virtual ICollection<Tenant> Tenants { get; set; } = new List<Tenant>();
 }

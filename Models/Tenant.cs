@@ -23,5 +23,9 @@ public partial class Tenant
 
     public string? Status { get; set; }
 
+    public int? LeaseId { get; set; }
+
+    public virtual LeaseAgreement? Lease { get; set; }
+
     public virtual ICollection<MaintenanceRequest> MaintenanceRequests { get; set; } = new List<MaintenanceRequest>();
 }
