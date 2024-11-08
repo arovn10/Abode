@@ -79,6 +79,7 @@ namespace Abode.ShowingsRoute
                 StartTime = x.StartTime,
                 EndTime = x.EndTime,
                 PublicShowing = x.PublicShowing,
+                ShowingId = x.ShowingId
             });
 
             return Ok(result);
