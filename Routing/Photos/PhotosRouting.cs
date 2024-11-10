@@ -54,7 +54,8 @@ namespace Abode.PhotosRoute
             {
                 PropertyKey = photo.PropertyKey,
                 PhotoLink = photo.PhotoLink,
-                Description = photo.Description
+                Description = photo.Description,
+                PhotoId = photo.PhotoId
             });
 
             return Ok(result);
@@ -88,6 +89,30 @@ namespace Abode.PhotosRoute
                 return StatusCode(500, $"An error occurred while updating the photo: {ex.Message}. Details: {ex.InnerException?.Message}");
             }
         }
+
+        [HttpDelete("delete/{id}")]
+        public IActionResult DeletePhoto(int id)
+        {
+            try
+            {
+                var photoToDelete = _dbContext.Photos.FirstOrDefault(p => p.PhotoId == id);
+
+                if (photoToDelete == null)
+                {
+                    return NotFound($"No photo found with ID {id}");
+                }
+
+                _dbContext.Photos.Remove(photoToDelete);
+                _dbContext.SaveChanges();
+
+                return Ok("Photo deleted successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while deleting the photo: {ex.Message}. Details: {ex.InnerException?.Message}");
+            }
+        }
+
 
     }
 
